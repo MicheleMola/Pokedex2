@@ -1,0 +1,11 @@
+name: Pokedex2
+options:
+  bundleIdPrefix: com.michelemola
+targets:
+  Pokedex2:
+    type: application
+    platform: iOS
+    deploymentTarget: "13.0"
+    sources: [Pokedex2]
+    settings:
+      TARGETED_DEVICE_FAMILY: 1
