@@ -92,20 +92,14 @@ class PokemonCell: UICollectionViewCell {
 		
 		self.pokemonImageView.loadImage(at: pokemon.sprites.frontDefault)
 		
-		if pokemon.types.count > 1, let secondTypeName = pokemon.types.last?.type.name, let pokemonType = PokemonType(rawValue: secondTypeName) {
-			self.contentView.backgroundColor = pokemonType.getColor()
-
-			self.firstTypeLabel.text = secondTypeName.capitalized
+		self.contentView.backgroundColor = pokemon.primaryType?.getColor()
+		
+		if pokemon.types.count > 1 {
+			self.firstTypeLabel.text = pokemon.types.last?.type.name.capitalized
 			self.secondTypeLabel.text = pokemon.types.first?.type.name.capitalized
-
 		} else {
+			self.firstTypeLabel.text = pokemon.types.first?.type.name.capitalized
 			self.secondTypeLabel.isHidden = true
-
-			if let firstTypeName = pokemon.types.first?.type.name, let pokemonType = PokemonType(rawValue: firstTypeName) {
-				
-				self.contentView.backgroundColor = pokemonType.getColor()
-				self.firstTypeLabel.text = firstTypeName.capitalized
-			}
 		}
 	}
 	
@@ -148,7 +142,7 @@ class PokemonCell: UICollectionViewCell {
 		self.firstTypeLabel.translatesAutoresizingMaskIntoConstraints = false
 		let firstTypeLabelConstraints = [
 			self.firstTypeLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
-			self.firstTypeLabel.topAnchor.constraint(equalTo: self.nameLabel.bottomAnchor, constant: 12),
+			self.firstTypeLabel.topAnchor.constraint(equalTo: self.nameLabel.bottomAnchor, constant: 10),
 			self.firstTypeLabel.heightAnchor.constraint(equalToConstant: 24),
 			self.firstTypeLabel.trailingAnchor.constraint(equalTo: self.pokemonImageView.leadingAnchor, constant: -8)
 		]
@@ -157,7 +151,7 @@ class PokemonCell: UICollectionViewCell {
 		self.secondTypeLabel.translatesAutoresizingMaskIntoConstraints = false
 		let secondTypeLabelConstraints = [
 			self.secondTypeLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
-			self.secondTypeLabel.topAnchor.constraint(equalTo: self.firstTypeLabel.bottomAnchor, constant: 12),
+			self.secondTypeLabel.topAnchor.constraint(equalTo: self.firstTypeLabel.bottomAnchor, constant: 10),
 			self.secondTypeLabel.heightAnchor.constraint(equalToConstant: 24),
 			self.secondTypeLabel.trailingAnchor.constraint(equalTo: self.pokemonImageView.leadingAnchor, constant: -8)
 		]

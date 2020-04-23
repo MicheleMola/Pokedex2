@@ -34,6 +34,16 @@ struct Pokemon: Codable {
 	var imageURL: URL? {
 		URL(string: "https://pokeres.bastionbot.org/images/pokemon/\(id).png")
 	}
+	
+	var primaryType: PokemonType? {
+		if types.count > 1, let secondTypeName = types.last?.type.name {
+			return PokemonType(rawValue: secondTypeName)
+		} else if let firstTypeName = types.first?.type.name {
+			return PokemonType(rawValue: firstTypeName)
+		}
+		
+		return nil
+	}
 }
 
 struct TypeResponse: Codable {

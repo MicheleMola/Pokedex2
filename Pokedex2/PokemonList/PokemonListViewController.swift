@@ -67,7 +67,10 @@ class PokemonListViewController: UIViewController {
 		self.pokemonListView.didSelectPokemonAtRow = { [unowned self] row in
 			let pokemon = self.pokemons[row]
 			
-			print(pokemon)
+			let pokemonDetailViewModel = PokemonDetailViewModel(pokemon: pokemon)
+			let pokemonDetailViewController = PokemonDetailViewController(viewModel: pokemonDetailViewModel)
+			
+			self.present(pokemonDetailViewController, animated: true, completion: nil)
 		}
 	}
 	

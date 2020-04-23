@@ -72,24 +72,20 @@ class StatIndicatorView: UIView {
 	private func layout() {
 		
 		self.valueLabel.translatesAutoresizingMaskIntoConstraints = false
-		
 		let valueLabelConstraints = [
 			self.valueLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor),
 			self.valueLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor),
 			self.valueLabel.widthAnchor.constraint(equalToConstant: 36)
 		]
-		
 		NSLayoutConstraint.activate(valueLabelConstraints)
 		
 		self.progressView.translatesAutoresizingMaskIntoConstraints = false
-		
 		let progressViewConstraints = [
 			self.progressView.leadingAnchor.constraint(equalTo: self.valueLabel.trailingAnchor, constant: 16),
 			self.progressView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
 			self.progressView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
 			self.progressView.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.3)
 		]
-		
 		NSLayoutConstraint.activate(progressViewConstraints)
 	}
 	
