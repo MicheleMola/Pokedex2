@@ -7,14 +7,10 @@
 
 import UIKit
 
-struct PokemonDetailTableViewHeaderViewModel {
-	let pokemon: Pokemon
-}
-
 class PokemonDetailTableViewHeader: UIView {
     static let reusableIdentifier = "PokemonDetailTableViewHeader"
 	
-	var viewModel: PokemonDetailTableViewHeaderViewModel? {
+	var viewModel: PokemonViewModel? {
 		didSet {
 			self.update()
 		}
@@ -132,20 +128,18 @@ class PokemonDetailTableViewHeader: UIView {
 			return
 		}
 		
-		self.backgroundColor = viewModel.pokemon.primaryType?.getColor()
+		self.nameLabel.text = viewModel.capitalizedName
+		self.backgroundColor = viewModel.primaryTypeColor
+		self.idLabel.text = viewModel.id
+		self.firstTypeLabel.text = viewModel.firstTypeName
 		
-		self.nameLabel.text = viewModel.pokemon.name.capitalized
-		self.idLabel.text = "#\(viewModel.pokemon.id)"
-		
-		if viewModel.pokemon.types.count > 1 {
-			self.firstTypeLabel.text = viewModel.pokemon.types.last?.type.name.capitalized
-			self.secondTypeLabel.text = viewModel.pokemon.types.first?.type.name.capitalized
+		if viewModel.hasTwoTypes {
+			self.secondTypeLabel.text = viewModel.secondTypeName
 		} else {
-			self.firstTypeLabel.text = viewModel.pokemon.types.first?.type.name.capitalized
 			self.secondTypeLabel.isHidden = true
 		}
-		
-		if let imageURL = viewModel.pokemon.imageURL {
+
+		if let imageURL = viewModel.imageURL {
 			self.pokemonImageView.loadImage(at: imageURL)
 		}
 	}

@@ -7,28 +7,11 @@
 
 import UIKit
 
-struct PokemonListViewModel {
-	let pokemons: [Pokemon]
-}
+//struct PokemonListViewModel {
+//	let pokemons: [Pokemon]
+//}
 
 class PokemonListView: UIView {
-	
-	// MARK: - Public properties
-	var viewModel: PokemonListViewModel? {
-		didSet {
-			self.update()
-		}
-	}
-	
-	var isDownloading = false {
-		didSet {
-			if isDownloading {
-				self.pokeBallLoader.show()
-			} else {
-				self.pokeBallLoader.dismiss()
-			}
-		}
-	}
 	
 	// MARK: - Private properties
 	private var pokemonsCollectionView: UICollectionView!
@@ -43,17 +26,23 @@ class PokemonListView: UIView {
 	
 	private let pokeBallLoader = PokeBallLoader()
 	private let pokemonsCollectionViewFooterReusableIdentifier = "PokemonsCollectionViewFooterReusableIdentifier"
-
+	
+	private var viewModel: PokemonListViewModel
+	private var pokemons: [Pokemon] = []
 
 	// MARK: - Interactions
 	var willDisplayCellAtRow: ((Int) -> ())?
 	var didSelectPokemonAtRow: ((Int) -> ())?
-	
-	override init(frame: CGRect) {
-		super.init(frame: frame)
 		
+	init(viewModel: PokemonListViewModel) {
+		self.viewModel = viewModel
+
+		super.init(frame: .zero)
+				
 		self.setup()
 		self.style()
+		self.layout()
+		self.setupBinding()
 	}
 	
 	required init?(coder: NSCoder) {
@@ -81,6 +70,23 @@ class PokemonListView: UIView {
 		self.pokemonsCollectionView.backgroundColor = .white
 	}
 	
+	private func setupBinding() {
+		self.viewModel.publishedIsDownloading.bind { [weak self] value in
+			if value {
+				self?.pokeBallLoader.show()
+			} else {
+				self?.pokeBallLoader.dismiss()
+			}
+		}
+		
+		self.viewModel.publishedPokemons.bind { [weak self] pokemons in
+			self?.pokemons = pokemons
+			
+			self?.pokemonsCollectionView.reloadData()
+		}
+ 
+	}
+	
 	private func layout() {
 		self.pokemonsCollectionView.translatesAutoresizingMaskIntoConstraints = false
 
@@ -93,26 +99,19 @@ class PokemonListView: UIView {
 		
 		NSLayoutConstraint.activate(pokemonsCollectionViewConstraints)
 	}
-	
-	override func layoutSubviews() {
-		super.layoutSubviews()
-		
-		self.layout()
-	}
+
 }
 
 // MARK: - UICollectionViewDataSource
 extension PokemonListView: UICollectionViewDataSource {
 	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-		return viewModel?.pokemons.count ?? 0
+		return self.pokemons.count
 	}
 	
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PokemonCell.reusableIdentifier, for: indexPath) as! PokemonCell
 		
-		if let pokemon = viewModel?.pokemons[indexPath.row] {
-			cell.viewModel = PokemonCellViewModel(pokemon: pokemon)
-		}
+		cell.viewModel = PokemonViewModel(pokemon: pokemons[indexPath.row])
 		
 		return cell
 	}

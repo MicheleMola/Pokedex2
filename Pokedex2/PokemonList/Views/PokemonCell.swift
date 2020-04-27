@@ -7,6 +7,50 @@
 
 import UIKit
 
+struct PokemonViewModel {
+	private let pokemon: Pokemon
+
+	init(pokemon: Pokemon) {
+		self.pokemon = pokemon
+	}
+
+	var capitalizedName: String {
+		return pokemon.name.capitalized
+	}
+
+	var primaryTypeColor: UIColor? {
+		return pokemon.primaryType?.getColor()
+	}
+
+	var id: String {
+		return "#\(pokemon.id)"
+	}
+
+	var thumbnailURL: URL {
+		return pokemon.sprites.frontDefault
+	}
+
+	var imageURL: URL? {
+		return pokemon.imageURL
+	}
+
+	var firstTypeName: String? {
+		if self.hasTwoTypes {
+			return pokemon.types.last?.type.name.capitalized
+		} else {
+			return pokemon.types.first?.type.name.capitalized
+		}
+	}
+
+	var secondTypeName: String? {
+		return self.hasTwoTypes ? pokemon.types.first?.type.name.capitalized : nil
+	}
+
+	var hasTwoTypes: Bool {
+		return pokemon.types.count > 1
+	}
+}
+
 class PokemonCell: UICollectionViewCell {
     static let reusableIdentifier = "PokemonCell"
 
@@ -18,7 +62,7 @@ class PokemonCell: UICollectionViewCell {
 	
 	private let whitePokeballImageView = UIImageView()
 	
-	var viewModel: PokemonCellViewModel? {
+	var viewModel: PokemonViewModel? {
 		didSet {
 			self.update()
 		}
@@ -48,7 +92,6 @@ class PokemonCell: UICollectionViewCell {
 	private func setup() {
 		self.contentView.addSubview(self.nameLabel)
 		self.contentView.addSubview(self.idLabel)
-		
 		self.contentView.addSubview(self.whitePokeballImageView)
 		self.contentView.addSubview(self.pokemonImageView)
 		self.contentView.addSubview(self.firstTypeLabel)
@@ -83,22 +126,19 @@ class PokemonCell: UICollectionViewCell {
 	}
 	
 	private func update() {
-		guard let pokemon = viewModel?.pokemon else {
+		guard let viewModel = self.viewModel else {
 			return
 		}
 		
-		self.nameLabel.text = pokemon.name.capitalized
-		self.idLabel.text = "#\(pokemon.id)"
+		self.nameLabel.text = viewModel.capitalizedName
+		self.contentView.backgroundColor = viewModel.primaryTypeColor
+		self.idLabel.text = viewModel.id
+		self.pokemonImageView.loadImage(at: viewModel.thumbnailURL)
+		self.firstTypeLabel.text = viewModel.firstTypeName
 		
-		self.pokemonImageView.loadImage(at: pokemon.sprites.frontDefault)
-		
-		self.contentView.backgroundColor = pokemon.primaryType?.getColor()
-		
-		if pokemon.types.count > 1 {
-			self.firstTypeLabel.text = pokemon.types.last?.type.name.capitalized
-			self.secondTypeLabel.text = pokemon.types.first?.type.name.capitalized
+		if viewModel.hasTwoTypes {
+			self.secondTypeLabel.text = viewModel.secondTypeName
 		} else {
-			self.firstTypeLabel.text = pokemon.types.first?.type.name.capitalized
 			self.secondTypeLabel.isHidden = true
 		}
 	}
@@ -168,8 +208,4 @@ class PokemonCell: UICollectionViewCell {
 		
 		self.contentView.layer.cornerRadius = self.contentView.bounds.height / 10
 	}
-}
-
-struct PokemonCellViewModel {
-	let pokemon: Pokemon
 }

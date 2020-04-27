@@ -7,26 +7,22 @@
 
 import UIKit
 
-struct PokemonDetailViewModel {
-	let pokemon: Pokemon
-}
-
 class PokemonDetailView: UIView {
 	
-	var viewModel: PokemonDetailViewModel? {
-		didSet {
-			self.update()
-		}
-	}
-	
+	private var viewModel: PokemonDetailViewModel
 	private let pokemonDetailTableView = UITableView(frame: .zero, style: .grouped)
 	
-	override init(frame: CGRect) {
-		super.init(frame: frame)
+	private var pokemon: Pokemon?
+	
+	init(viewModel: PokemonDetailViewModel) {
+		self.viewModel = viewModel
+
+		super.init(frame: .zero)
 		
 		self.setup()
 		self.style()
 		self.layout()
+		self.setupBinding()
 	}
 	
 	required init?(coder: NSCoder) {
@@ -64,6 +60,13 @@ class PokemonDetailView: UIView {
 	private func update() {
 		self.pokemonDetailTableView.reloadData()
 	}
+	
+	private func setupBinding() {
+		self.viewModel.publishedPokemon.bind { [weak self] pokemon in
+			self?.pokemon = pokemon
+			self?.pokemonDetailTableView.reloadData()
+		}
+	}
 }
 
 extension PokemonDetailView: UITableViewDataSource {
@@ -76,7 +79,7 @@ extension PokemonDetailView: UITableViewDataSource {
 			case 0:
 				let cell = tableView.dequeueReusableCell(withIdentifier: PokemonStatsTitleCell.reusableIdentifier, for: indexPath) as! PokemonStatsTitleCell
 				
-				if let pokemonTypeColor = viewModel?.pokemon.primaryType?.getColor() {
+				if let pokemonTypeColor = self.pokemon?.primaryType?.getColor() {
 					cell.viewModel = PokemonStatsTitleCellViewModel(pokemonTypeColor: pokemonTypeColor)
 				}
 				
@@ -85,7 +88,7 @@ extension PokemonDetailView: UITableViewDataSource {
 				let cell = tableView.dequeueReusableCell(withIdentifier: PokemonStatCell.reusableIdentifier, for: indexPath) as! PokemonStatCell
 				
 				let index = indexPath.row - 1
-				if let stat = viewModel?.pokemon.stats[index], let primaryTypeColor = viewModel?.pokemon.primaryType?.getColor() {
+				if let stat = self.pokemon?.stats[index], let primaryTypeColor = self.pokemon?.primaryType?.getColor() {
 					let pokemonStatCellViewModel = PokemonStatCellViewModel(title: StatTitle.allCases[index].rawValue, stat: stat, pokemonTypeColor: primaryTypeColor)
 					
 					cell.viewModel = pokemonStatCellViewModel
@@ -108,8 +111,8 @@ extension PokemonDetailView: UITableViewDelegate {
 	func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
 		let headerView = PokemonDetailTableViewHeader()
 		
-		if let pokemon = viewModel?.pokemon {
-			headerView.viewModel = PokemonDetailTableViewHeaderViewModel(pokemon: pokemon)
+		if let pokemon = self.pokemon {
+			headerView.viewModel = PokemonViewModel(pokemon: pokemon)
 		}
 		
 		return headerView

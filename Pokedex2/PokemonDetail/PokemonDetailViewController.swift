@@ -8,12 +8,12 @@
 import UIKit
 
 class PokemonDetailViewController: UIViewController {
-	let pokemonDetailView = PokemonDetailView()
+	var pokemonDetailViewModel: PokemonDetailViewModel
 	
-	public init(viewModel: PokemonDetailViewModel?) {
+	public init(model: Pokemon) {
+		self.pokemonDetailViewModel = PokemonDetailViewModel(model: model)
+
 		super.init(nibName: nil, bundle: nil)
-		
-		self.pokemonDetailView.viewModel = viewModel
 	}
 	
 	required init?(coder: NSCoder) {
@@ -21,7 +21,7 @@ class PokemonDetailViewController: UIViewController {
 	}
 	
 	override func loadView() {
-		self.view = self.pokemonDetailView
+		self.view = PokemonDetailView(viewModel: self.pokemonDetailViewModel)
 	}
 	
 	override func viewDidLoad() {
