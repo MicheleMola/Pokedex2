@@ -6,10 +6,7 @@
 //
 
 import UIKit
-
-//struct PokemonListViewModel {
-//	let pokemons: [Pokemon]
-//}
+import Combine
 
 class PokemonListView: UIView {
 	
@@ -28,12 +25,27 @@ class PokemonListView: UIView {
 	private let pokemonsCollectionViewFooterReusableIdentifier = "PokemonsCollectionViewFooterReusableIdentifier"
 	
 	private var viewModel: PokemonListViewModel
-	private var pokemons: [Pokemon] = []
+	private var subscriptions = Set<AnyCancellable>()
+	private var pokemons: [PokemonReference] = [] {
+		didSet {
+			self.pokemonsCollectionView.reloadData()
+		}
+	}
+	
+	private var isDownloading = false {
+		didSet {
+			if isDownloading {
+				self.pokeBallLoader.show()
+			} else {
+				self.pokeBallLoader.dismiss()
+			}
+		}
+	}
 
 	// MARK: - Interactions
 	var willDisplayCellAtRow: ((Int) -> ())?
 	var didSelectPokemonAtRow: ((Int) -> ())?
-		
+
 	init(viewModel: PokemonListViewModel) {
 		self.viewModel = viewModel
 
@@ -47,10 +59,6 @@ class PokemonListView: UIView {
 	
 	required init?(coder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
-	}
-	
-	private func update() {
-		self.pokemonsCollectionView.reloadData()
 	}
 	
 	private func setup() {
@@ -71,20 +79,15 @@ class PokemonListView: UIView {
 	}
 	
 	private func setupBinding() {
-		self.viewModel.publishedIsDownloading.bind { [weak self] value in
-			if value {
-				self?.pokeBallLoader.show()
-			} else {
-				self?.pokeBallLoader.dismiss()
-			}
-		}
+		self.viewModel.$pokemons
+			.receive(on: DispatchQueue.main)
+			.assign(to: \.pokemons, on: self)
+			.store(in: &subscriptions)
 		
-		self.viewModel.publishedPokemons.bind { [weak self] pokemons in
-			self?.pokemons = pokemons
-			
-			self?.pokemonsCollectionView.reloadData()
-		}
- 
+		self.viewModel.$isDownloading
+			.receive(on: DispatchQueue.main)
+			.assign(to: \.isDownloading, on: self)
+			.store(in: &subscriptions)
 	}
 	
 	private func layout() {
@@ -111,7 +114,7 @@ extension PokemonListView: UICollectionViewDataSource {
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PokemonCell.reusableIdentifier, for: indexPath) as! PokemonCell
 		
-		cell.viewModel = PokemonViewModel(pokemon: pokemons[indexPath.row])
+		cell.viewModel = PokemonCellViewModel(pokemonReference: self.pokemons[indexPath.row])
 		
 		return cell
 	}

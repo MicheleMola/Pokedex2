@@ -7,10 +7,50 @@
 
 import UIKit
 
+struct PokemonDetailTableViewHeaderViewModel {
+	private let pokemon: Pokemon
+
+	init(pokemon: Pokemon) {
+		self.pokemon = pokemon
+	}
+
+	var capitalizedName: String {
+		return pokemon.name.capitalized
+	}
+
+	var primaryTypeColor: UIColor? {
+		return pokemon.primaryType?.getColor()
+	}
+
+	var id: String {
+		return "#\(pokemon.id)"
+	}
+
+	var imageURL: URL? {
+		return pokemon.imageURL
+	}
+
+	var firstTypeName: String? {
+		if self.hasTwoTypes {
+			return pokemon.types.last?.type.name.capitalized
+		} else {
+			return pokemon.types.first?.type.name.capitalized
+		}
+	}
+
+	var secondTypeName: String? {
+		return self.hasTwoTypes ? pokemon.types.first?.type.name.capitalized : nil
+	}
+
+	var hasTwoTypes: Bool {
+		return pokemon.types.count > 1
+	}
+}
+
 class PokemonDetailTableViewHeader: UIView {
     static let reusableIdentifier = "PokemonDetailTableViewHeader"
 	
-	var viewModel: PokemonViewModel? {
+	var viewModel: PokemonDetailTableViewHeaderViewModel? {
 		didSet {
 			self.update()
 		}

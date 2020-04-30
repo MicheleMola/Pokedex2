@@ -6,19 +6,34 @@
 //
 
 import Foundation
+import Combine
 
 class PokemonDetailViewModel {
-	let publishedPokemon: Box<Pokemon?> = Box(nil)
+	@Published var pokemon: Pokemon?
 	
-	private let pokemon: Pokemon
+	private let pokemonReference: PokemonReference
 	
-	init(model: Pokemon) {
-		self.pokemon = model
+	private let combineAPI = CombineAPIClient()
+	
+	var subscriptions = Set<AnyCancellable>()
+	
+	init(model: PokemonReference) {
+		self.pokemonReference = model
 		
 		self.setup()
 	}
 	
 	private func setup() {
-		self.publishedPokemon.value = self.pokemon
+		self.loadPokemon(byId: self.pokemonReference.id)
+	}
+	
+	private func loadPokemon(byId id: String) {
+		self.combineAPI.getPokemon(byId: id)
+			.receive(on: DispatchQueue.main)
+			.sink(receiveCompletion: { _ in },
+			receiveValue: { [unowned self] pokemon in
+				self.pokemon = pokemon
+			})
+			.store(in: &self.subscriptions)
 	}
 }

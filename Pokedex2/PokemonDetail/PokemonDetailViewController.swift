@@ -10,7 +10,7 @@ import UIKit
 class PokemonDetailViewController: UIViewController {
 	var pokemonDetailViewModel: PokemonDetailViewModel
 	
-	public init(model: Pokemon) {
+	public init(model: PokemonReference) {
 		self.pokemonDetailViewModel = PokemonDetailViewModel(model: model)
 
 		super.init(nibName: nil, bundle: nil)

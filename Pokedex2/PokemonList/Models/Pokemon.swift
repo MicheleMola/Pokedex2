@@ -15,6 +15,10 @@ struct PokemonReference: Codable {
 	var id: String {
 		self.url.lastPathComponent
 	}
+	
+	var spriteURL: URL? {
+		URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/\(self.id).png")
+	}
 }
 
 struct PokemonReferenceList: Codable {

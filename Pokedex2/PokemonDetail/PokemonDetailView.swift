@@ -6,13 +6,20 @@
 //
 
 import UIKit
+import Combine
 
 class PokemonDetailView: UIView {
 	
 	private var viewModel: PokemonDetailViewModel
 	private let pokemonDetailTableView = UITableView(frame: .zero, style: .grouped)
 	
-	private var pokemon: Pokemon?
+	private var pokemon: Pokemon? {
+		didSet {
+			self.pokemonDetailTableView.reloadData()
+		}
+	}
+	
+	var subscriptions = Set<AnyCancellable>()
 	
 	init(viewModel: PokemonDetailViewModel) {
 		self.viewModel = viewModel
@@ -56,16 +63,12 @@ class PokemonDetailView: UIView {
 		]
 		NSLayoutConstraint.activate(pokemonDetailTableViewConstraints)
 	}
-	
-	private func update() {
-		self.pokemonDetailTableView.reloadData()
-	}
-	
+		
 	private func setupBinding() {
-		self.viewModel.publishedPokemon.bind { [weak self] pokemon in
-			self?.pokemon = pokemon
-			self?.pokemonDetailTableView.reloadData()
-		}
+		self.viewModel.$pokemon
+			.receive(on: DispatchQueue.main)
+			.assign(to: \.pokemon, on: self)
+			.store(in: &subscriptions)
 	}
 }
 
@@ -112,7 +115,7 @@ extension PokemonDetailView: UITableViewDelegate {
 		let headerView = PokemonDetailTableViewHeader()
 		
 		if let pokemon = self.pokemon {
-			headerView.viewModel = PokemonViewModel(pokemon: pokemon)
+			headerView.viewModel = PokemonDetailTableViewHeaderViewModel(pokemon: pokemon)
 		}
 		
 		return headerView
