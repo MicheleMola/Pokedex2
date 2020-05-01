@@ -51,6 +51,7 @@ class PokemonDetailView: UIView {
 		self.pokemonDetailTableView.backgroundColor = .white
 		self.pokemonDetailTableView.separatorStyle = .none
 		self.pokemonDetailTableView.bounces = false
+		self.pokemonDetailTableView.allowsSelection = false
 	}
 	
 	private func layout() {

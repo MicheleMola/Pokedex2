@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 struct PokemonCellViewModel {
 	private let pokemonReference: PokemonReference
@@ -37,6 +38,8 @@ class PokemonCell: UICollectionViewCell {
 	private let secondTypeLabel = UILabel()
 	
 	private let whitePokeballImageView = UIImageView()
+		
+	private var subscription: AnyCancellable?
 	
 	var viewModel: PokemonCellViewModel? {
 		didSet {
@@ -60,7 +63,8 @@ class PokemonCell: UICollectionViewCell {
 		super.prepareForReuse()
 		
 		self.pokemonImageView.image = nil
-		self.pokemonImageView.cancelImageLoad()
+		
+		self.subscription?.cancel()
 	}
 	
 	private func setup() {
@@ -108,7 +112,9 @@ class PokemonCell: UICollectionViewCell {
 		self.idLabel.text = viewModel.id
 		
 		if let spriteURL = viewModel.spriteURL {
-			self.pokemonImageView.loadImage(at: spriteURL)
+			self.subscription = CombineImageLoader.load(from: spriteURL)
+				.receive(on: DispatchQueue.main)
+				.assign(to: \.image, on: self.pokemonImageView)
 		}
 	}
 	

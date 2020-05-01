@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 struct PokemonDetailTableViewHeaderViewModel {
 	private let pokemon: Pokemon
@@ -62,6 +63,8 @@ class PokemonDetailTableViewHeader: UIView {
 	private let idLabel = UILabel()
 	private let firstTypeLabel = UILabel()
 	private let secondTypeLabel = UILabel()
+	
+	private var subscription: AnyCancellable?
 
 	override init(frame: CGRect) {
 		super.init(frame: frame)
@@ -180,7 +183,9 @@ class PokemonDetailTableViewHeader: UIView {
 		}
 
 		if let imageURL = viewModel.imageURL {
-			self.pokemonImageView.loadImage(at: imageURL)
+			self.subscription = CombineImageLoader.load(from: imageURL)
+				.receive(on: DispatchQueue.main)
+				.assign(to: \.image, on: self.pokemonImageView)
 		}
 	}
 	
