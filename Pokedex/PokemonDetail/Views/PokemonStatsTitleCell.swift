@@ -73,7 +73,8 @@ class PokemonStatsTitleCell: UITableViewCell {
 	}
 	
 	private func update() {
-		self.contentView.backgroundColor = viewModel?.pokemonTypeColor
+		guard let viewModel = self.viewModel else { return }
+		self.contentView.backgroundColor = viewModel.pokemonTypeColor
 	}
 	
 	override func layoutSubviews() {

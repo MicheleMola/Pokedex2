@@ -31,15 +31,11 @@ struct PokemonCellViewModel {
 	}
 	
 	var firstType: String? {
-		self.pokemonHasTwoTypes
-			? pokemon.types.last?.type.name.capitalized
-			: pokemon.types.first?.type.name.capitalized
+		self.pokemon.types.first?.type.name.capitalized
 	}
 	
 	var secondType: String? {
-		self.pokemonHasTwoTypes
-			? pokemon.types.first?.type.name.capitalized
-			: nil
+		self.pokemon.types.last?.type.name.capitalized
 	}
 }
 

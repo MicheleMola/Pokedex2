@@ -14,7 +14,7 @@ struct PokemonStatCellViewModel {
 }
 
 class PokemonStatCell: UITableViewCell {
-    static let reusableIdentifier = "PokemonStatCell"
+	static let reusableIdentifier = "PokemonStatCell"
 	
 	private let titleLabel = UILabel()
 	private let statIndicatorView = StatIndicatorView()

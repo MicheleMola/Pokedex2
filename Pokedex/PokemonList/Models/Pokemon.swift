@@ -36,13 +36,8 @@ struct Pokemon: Codable {
 	}
 	
 	var primaryType: PokemonType? {
-		if types.count > 1, let secondTypeName = types.last?.type.name {
-			return PokemonType(rawValue: secondTypeName)
-		} else if let firstTypeName = types.first?.type.name {
-			return PokemonType(rawValue: firstTypeName)
-		}
-		
-		return nil
+		guard let type = types.first?.type.name else { return nil }
+		return PokemonType(rawValue: type)
 	}
 }
 

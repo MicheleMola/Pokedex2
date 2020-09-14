@@ -9,10 +9,38 @@ import UIKit
 
 struct PokemonDetailTableViewHeaderViewModel {
 	let pokemon: Pokemon
+	
+	var pokemonNameCapitalized: String {
+		self.pokemon.name.capitalized
+	}
+	
+	var pokemonId: String {
+		"#\(self.pokemon.id)"
+	}
+	
+	var primaryTypeColor: UIColor? {
+		self.pokemon.primaryType?.getColor()
+	}
+	
+	var pokemonHasTwoTypes: Bool {
+		self.pokemon.types.count > 1
+	}
+	
+	var firstType: String? {
+		self.pokemon.types.first?.type.name.capitalized
+	}
+	
+	var secondType: String? {
+		self.pokemon.types.last?.type.name.capitalized
+	}
+	
+	var pokemonImageURL: URL? {
+		self.pokemon.imageURL
+	}
 }
 
 class PokemonDetailTableViewHeader: UIView {
-    static let reusableIdentifier = "PokemonDetailTableViewHeader"
+	static let reusableIdentifier = "PokemonDetailTableViewHeader"
 	
 	var viewModel: PokemonDetailTableViewHeaderViewModel? {
 		didSet {
@@ -26,7 +54,7 @@ class PokemonDetailTableViewHeader: UIView {
 	private let idLabel = UILabel()
 	private let firstTypeLabel = UILabel()
 	private let secondTypeLabel = UILabel()
-
+	
 	override init(frame: CGRect) {
 		super.init(frame: frame)
 		
@@ -132,20 +160,16 @@ class PokemonDetailTableViewHeader: UIView {
 			return
 		}
 		
-		self.backgroundColor = viewModel.pokemon.primaryType?.getColor()
+		self.backgroundColor = viewModel.primaryTypeColor
 		
-		self.nameLabel.text = viewModel.pokemon.name.capitalized
-		self.idLabel.text = "#\(viewModel.pokemon.id)"
+		self.nameLabel.text = viewModel.pokemonNameCapitalized
+		self.idLabel.text = viewModel.pokemonId
 		
-		if viewModel.pokemon.types.count > 1 {
-			self.firstTypeLabel.text = viewModel.pokemon.types.last?.type.name.capitalized
-			self.secondTypeLabel.text = viewModel.pokemon.types.first?.type.name.capitalized
-		} else {
-			self.firstTypeLabel.text = viewModel.pokemon.types.first?.type.name.capitalized
-			self.secondTypeLabel.isHidden = true
-		}
+		self.firstTypeLabel.text = viewModel.firstType
+		self.secondTypeLabel.text = viewModel.secondType
+		self.secondTypeLabel.isHidden = !viewModel.pokemonHasTwoTypes
 		
-		if let imageURL = viewModel.pokemon.imageURL {
+		if let imageURL = viewModel.pokemonImageURL {
 			self.pokemonImageView.loadImage(at: imageURL)
 		}
 	}
