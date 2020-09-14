@@ -54,8 +54,8 @@ struct Sprites: Codable {
 	let frontDefault: URL
 	
 	private enum CodingKeys: String, CodingKey {
-        case frontDefault = "front_default"
-    }
+		case frontDefault = "front_default"
+	}
 }
 
 struct StatResponse: Codable {
@@ -63,8 +63,8 @@ struct StatResponse: Codable {
 	let stat: NameResponse
 	
 	private enum CodingKeys: String, CodingKey {
-        case baseStat = "base_stat", stat
-    }
+		case baseStat = "base_stat", stat
+	}
 }
 
 struct NameResponse: Codable {

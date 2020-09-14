@@ -13,8 +13,10 @@ let cache = NSCache<NSURL, UIImage>()
 class ImageLoader {
 	private var runningRequests = [UUID: URLSessionDataTask]()
 	
-	func loadImage(_ url: URL, _ completion: @escaping (Result<UIImage, Error>) -> Void) -> UUID? {
-		
+	func loadImage(
+		_ url: URL,
+		_ completion: @escaping (Result<UIImage, Error>) -> Void
+	) -> UUID? {
 		if let image = cache.object(forKey: url as NSURL) {
 			completion(.success(image))
 			return nil
@@ -23,7 +25,7 @@ class ImageLoader {
 		let uuid = UUID()
 		
 		let task = URLSession.shared.dataTask(with: url) { data, response, error in
-
+			
 			defer { self.runningRequests.removeValue(forKey: uuid) }
 			
 			if let data = data, let image = UIImage(data: data) {
@@ -33,8 +35,6 @@ class ImageLoader {
 			}
 			
 			guard let error = error else {
-				// without an image or an error, we'll just ignore this for now
-				// you could add your own special error cases for this scenario
 				return
 			}
 			
@@ -57,7 +57,6 @@ class ImageLoader {
 	}
 }
 
-
 class UIImageLoader {
 	static let loader = UIImageLoader()
 	
@@ -66,9 +65,12 @@ class UIImageLoader {
 	
 	private init() {}
 	
-	func load(_ url: URL, for imageView: UIImageView) {
+	func load(
+		_ url: URL,
+		for imageView: UIImageView
+	) {
 		let token = imageLoader.loadImage(url) { result in
-	
+			
 			defer { self.uuidMap.removeValue(forKey: imageView) }
 			
 			do {
@@ -76,8 +78,9 @@ class UIImageLoader {
 				DispatchQueue.main.async {
 					imageView.image = image
 				}
-			} catch {
+			} catch let error {
 				// handle the error
+				print(error)
 			}
 		}
 		

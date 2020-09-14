@@ -20,19 +20,19 @@ extension PokedexAPI: Endpoint {
 	
 	var path: String {
 		switch self {
-		case .getPokemonList: return "/api/v2/pokemon"
-		case .getPokemon(let id): return "/api/v2/pokemon/\(id)"
+			case .getPokemonList: return "/api/v2/pokemon"
+			case .getPokemon(let id): return "/api/v2/pokemon/\(id)"
 		}
 	}
 	
 	var queryItems: [URLQueryItem] {
 		switch self {
-		case .getPokemonList(let offset, let limit):
-			return [
-				URLQueryItem(name: "offset", value: "\(offset)"),
-				URLQueryItem(name: "limit", value: "\(limit)")
+			case .getPokemonList(let offset, let limit):
+				return [
+					URLQueryItem(name: "offset", value: "\(offset)"),
+					URLQueryItem(name: "limit", value: "\(limit)")
 			]
-		default: return []
+			default: return []
 		}
 	}
 }

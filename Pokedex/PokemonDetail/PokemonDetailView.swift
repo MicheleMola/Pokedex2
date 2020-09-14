@@ -12,14 +12,16 @@ struct PokemonDetailViewModel {
 }
 
 class PokemonDetailView: UIView {
-	
 	var viewModel: PokemonDetailViewModel? {
 		didSet {
 			self.update()
 		}
 	}
 	
-	private let pokemonDetailTableView = UITableView(frame: .zero, style: .grouped)
+	private let pokemonDetailTableView = UITableView(
+		frame: .zero,
+		style: .grouped
+	)
 	
 	override init(frame: CGRect) {
 		super.init(frame: frame)
@@ -36,8 +38,14 @@ class PokemonDetailView: UIView {
 	private func setup() {
 		self.pokemonDetailTableView.dataSource = self
 		self.pokemonDetailTableView.delegate = self
-		self.pokemonDetailTableView.register(PokemonStatCell.self, forCellReuseIdentifier: PokemonStatCell.reusableIdentifier)
-		self.pokemonDetailTableView.register(PokemonStatsTitleCell.self, forCellReuseIdentifier: PokemonStatsTitleCell.reusableIdentifier)
+		self.pokemonDetailTableView.register(
+			PokemonStatCell.self,
+			forCellReuseIdentifier: PokemonStatCell.reusableIdentifier
+		)
+		self.pokemonDetailTableView.register(
+			PokemonStatsTitleCell.self,
+			forCellReuseIdentifier: PokemonStatsTitleCell.reusableIdentifier
+		)
 		
 		self.addSubview(self.pokemonDetailTableView)
 	}
@@ -67,11 +75,17 @@ class PokemonDetailView: UIView {
 }
 
 extension PokemonDetailView: UITableViewDataSource {
-	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+	func tableView(
+		_ tableView: UITableView,
+		numberOfRowsInSection section: Int
+	) -> Int {
 		return 7
 	}
 	
-	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+	func tableView(
+		_ tableView: UITableView,
+		cellForRowAt indexPath: IndexPath
+	) -> UITableViewCell {
 		switch indexPath.row {
 			case 0:
 				let cell = tableView.dequeueReusableCell(withIdentifier: PokemonStatsTitleCell.reusableIdentifier, for: indexPath) as! PokemonStatsTitleCell
@@ -98,14 +112,20 @@ extension PokemonDetailView: UITableViewDataSource {
 }
 
 extension PokemonDetailView: UITableViewDelegate {
-	func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+	func tableView(
+		_ tableView: UITableView,
+		heightForRowAt indexPath: IndexPath
+	) -> CGFloat {
 		switch indexPath.row {
 			case 0...6: return 60
 			default: return 0
 		}
 	}
 	
-	func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+	func tableView(
+		_ tableView: UITableView,
+		viewForHeaderInSection section: Int
+	) -> UIView? {
 		let headerView = PokemonDetailTableViewHeader()
 		
 		if let pokemon = viewModel?.pokemon {
@@ -115,7 +135,10 @@ extension PokemonDetailView: UITableViewDelegate {
 		return headerView
 	}
 	
-	func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+	func tableView(
+		_ tableView: UITableView,
+		heightForHeaderInSection section: Int
+	) -> CGFloat {
 		return 400
 	}
 }

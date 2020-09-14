@@ -9,7 +9,6 @@
 import UIKit
 
 class StatIndicatorView: UIView {
-	
 	let valueLabel = UILabel()
 	let progressView = UIProgressView()
 	
@@ -42,13 +41,13 @@ class StatIndicatorView: UIView {
 		self.layout()
 	}
 	
-	 required init?(coder aDecoder: NSCoder) {
+	required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
 		
 		self.setup()
 		self.style()
 		self.layout()
-	 }
+	}
 	
 	private func setup() {
 		self.addSubview(self.valueLabel)
@@ -63,7 +62,7 @@ class StatIndicatorView: UIView {
 		guard let progressValue = self.progressValue else { return }
 		
 		let percentageValue = Float(progressValue) / Float(self.maxValue)
-				
+		
 		self.progressView.progress = percentageValue
 		
 		self.valueLabel.text = "\(progressValue)"
@@ -98,5 +97,4 @@ class StatIndicatorView: UIView {
 			subview.layer.cornerRadius = (self.bounds.height * 0.3) / 2
 		}
 	}
-	
 }

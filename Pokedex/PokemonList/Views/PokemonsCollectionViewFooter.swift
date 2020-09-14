@@ -8,7 +8,7 @@
 import UIKit
 
 class PokemonsCollectionViewFooter: UICollectionReusableView {
-    static let reusableIdentifier = "P"
+	static let reusableIdentifier = "PokemonsCollectionViewFooter"
 	
 	let pokeBallLoader = PokeBallLoader()
 	
@@ -16,6 +16,7 @@ class PokemonsCollectionViewFooter: UICollectionReusableView {
 		super.init(frame: frame)
 		
 		self.setup()
+		self.style()
 		self.layout()
 	}
 	
@@ -27,9 +28,11 @@ class PokemonsCollectionViewFooter: UICollectionReusableView {
 		self.addSubview(self.pokeBallLoader)
 	}
 	
+	private func style() {}
+	
 	private func layout() {
 		self.pokeBallLoader.translatesAutoresizingMaskIntoConstraints = false
-
+		
 		let constraints = [
 			self.pokeBallLoader.centerXAnchor.constraint(equalTo: self.centerXAnchor),
 			self.pokeBallLoader.centerYAnchor.constraint(equalTo: self.centerYAnchor),
@@ -39,4 +42,11 @@ class PokemonsCollectionViewFooter: UICollectionReusableView {
 		NSLayoutConstraint.activate(constraints)
 	}
 	
+	func showLoader() {
+		self.pokeBallLoader.show()
+	}
+	
+	func hideLoader() {
+		self.pokeBallLoader.dismiss()
+	}
 }

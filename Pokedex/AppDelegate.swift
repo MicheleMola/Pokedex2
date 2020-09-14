@@ -10,19 +10,18 @@ import UIKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
+	
 	var window: UIWindow?
-
+	
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-		// Override point for customization after application launch.
 		
 		let pokemonListViewController = PokemonListViewController(viewModel: nil)
 		let navController = UINavigationController(rootViewController: pokemonListViewController)
-        
-        let w = UIWindow()
-        w.rootViewController = navController
-        self.window = w
-        w.makeKeyAndVisible()
+		
+		let w = UIWindow()
+		w.rootViewController = navController
+		self.window = w
+		w.makeKeyAndVisible()
 		
 		return true
 	}

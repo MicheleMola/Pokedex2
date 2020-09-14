@@ -9,7 +9,6 @@
 import UIKit
 
 class PokeBallLoader: UIView {
-	
 	let pokeBallImageView = UIImageView()
 	
 	override init(frame: CGRect) {
@@ -39,7 +38,6 @@ class PokeBallLoader: UIView {
 	}
 	
 	private func layout() {
-		
 		self.pokeBallImageView.translatesAutoresizingMaskIntoConstraints = false
 		
 		let constraints = [
@@ -50,7 +48,7 @@ class PokeBallLoader: UIView {
 			self.pokeBallImageView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
 			self.pokeBallImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor)
 		]
-
+		
 		NSLayoutConstraint.activate(constraints)
 	}
 	
@@ -65,7 +63,7 @@ class PokeBallLoader: UIView {
 	
 	func dismiss() {
 		self.pokeBallImageView.alpha = 0
-
+		
 		self.pokeBallImageView.transform = .identity
 	}
 }

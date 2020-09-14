@@ -10,24 +10,31 @@ import Foundation
 
 protocol APIClient {
 	var session: URLSession { get }
-	func fetch<T: Decodable>(with request: URLRequest, decode: @escaping (Decodable) -> T?, completion: @escaping (Result<T, APIError>) -> Void)
+	func fetch<T: Decodable>(
+		with request: URLRequest,
+		decode: @escaping (Decodable) -> T?,
+		completion: @escaping (Result<T, APIError>) -> Void
+	)
 }
 
 extension APIClient {
 	typealias JSONTaskCompletionHandler = (Decodable?, APIError?) -> Void
 	
-	private func decodingTask<T: Decodable>(with request: URLRequest, decodingType: T.Type, completionHandler completion: @escaping JSONTaskCompletionHandler) -> URLSessionDataTask {
-		
+	private func decodingTask<T: Decodable>(
+		with request: URLRequest,
+		decodingType: T.Type,
+		completionHandler completion: @escaping JSONTaskCompletionHandler
+	) -> URLSessionDataTask {
 		let task = session.dataTask(with: request) { data, response, error in
 			if let error = error as? URLError {
 				switch error.code {
-				case .networkConnectionLost:
-					completion(nil, .connectionLost)
-				case .notConnectedToInternet:
-					completion(nil, .notConnectToInternet)
-				default:
-					completion(nil, .requestFailed)
-					return
+					case .networkConnectionLost:
+						completion(nil, .connectionLost)
+					case .notConnectedToInternet:
+						completion(nil, .notConnectToInternet)
+					default:
+						completion(nil, .requestFailed)
+						return
 				}
 			}
 			
@@ -54,7 +61,11 @@ extension APIClient {
 		return task
 	}
 	
-	func fetch<T: Decodable>(with request: URLRequest, decode: @escaping (Decodable) -> T?, completion: @escaping (Result<T, APIError>) -> Void) {
+	func fetch<T: Decodable>(
+		with request: URLRequest,
+		decode: @escaping (Decodable) -> T?,
+		completion: @escaping (Result<T, APIError>) -> Void
+	) {
 		
 		let task = decodingTask(with: request, decodingType: T.self) { json, error in
 			

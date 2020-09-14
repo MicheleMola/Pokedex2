@@ -9,7 +9,10 @@
 import UIKit
 
 extension UIViewController {
-	func showAlert(withTitle title: String, andMessage message: String) {
+	func showAlert(
+		withTitle title: String,
+		andMessage message: String
+	) {
 		let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
 		let closeAction = UIAlertAction(title: "Close", style: .cancel) { action in
 			self.navigationController?.popViewController(animated: true)

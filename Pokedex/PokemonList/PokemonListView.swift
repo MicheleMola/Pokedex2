@@ -44,7 +44,6 @@ class PokemonListView: UIView {
 	private let pokeBallLoader = PokeBallLoader()
 	private let pokemonsCollectionViewFooterReusableIdentifier = "PokemonsCollectionViewFooterReusableIdentifier"
 
-
 	// MARK: - Interactions
 	var willDisplayCellAtRow: ((Int) -> ())?
 	var didSelectPokemonAtRow: ((Int) -> ())?
@@ -103,11 +102,17 @@ class PokemonListView: UIView {
 
 // MARK: - UICollectionViewDataSource
 extension PokemonListView: UICollectionViewDataSource {
-	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+	func collectionView(
+		_ collectionView: UICollectionView,
+		numberOfItemsInSection section: Int
+	) -> Int {
 		return viewModel?.pokemons.count ?? 0
 	}
 	
-	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+	func collectionView(
+		_ collectionView: UICollectionView,
+		cellForItemAt indexPath: IndexPath
+	) -> UICollectionViewCell {
 		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PokemonCell.reusableIdentifier, for: indexPath) as! PokemonCell
 		
 		if let pokemon = viewModel?.pokemons[indexPath.row] {
@@ -117,8 +122,11 @@ extension PokemonListView: UICollectionViewDataSource {
 		return cell
 	}
 	
-	func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-
+	func collectionView(
+		_ collectionView: UICollectionView,
+		viewForSupplementaryElementOfKind kind: String,
+		at indexPath: IndexPath
+	) -> UICollectionReusableView {
 		switch kind {
 		case UICollectionView.elementKindSectionFooter:
 			let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: self.pokemonsCollectionViewFooterReusableIdentifier, for: indexPath)
@@ -141,18 +149,29 @@ extension PokemonListView: UICollectionViewDataSource {
 		}
 	}
 	
-	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
+	func collectionView(
+		_ collectionView: UICollectionView,
+		layout collectionViewLayout: UICollectionViewLayout,
+		referenceSizeForFooterInSection section: Int
+	) -> CGSize {
 		return CGSize(width: self.pokemonsCollectionView.bounds.width, height: 60)
 	}
 }
 
 // MARK: - UICollectionViewDelegate
 extension PokemonListView: UICollectionViewDelegate {
-	func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+	func collectionView(
+		_ collectionView: UICollectionView,
+		willDisplay cell: UICollectionViewCell,
+		forItemAt indexPath: IndexPath
+	) {
 		self.willDisplayCellAtRow?(indexPath.row)
 	}
 	
-	func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+	func collectionView(
+		_ collectionView: UICollectionView,
+		didSelectItemAt indexPath: IndexPath
+	) {
 		self.didSelectPokemonAtRow?(indexPath.row)
 	}
 }
@@ -160,10 +179,11 @@ extension PokemonListView: UICollectionViewDelegate {
 
 // MARK: - UICollectionViewDelegateFlowLayout
 extension PokemonListView: UICollectionViewDelegateFlowLayout {
-	func collectionView(_ collectionView: UICollectionView,
-						layout collectionViewLayout: UICollectionViewLayout,
-						sizeForItemAt indexPath: IndexPath) -> CGSize {
-		
+	func collectionView(
+		_ collectionView: UICollectionView,
+		layout collectionViewLayout: UICollectionViewLayout,
+		sizeForItemAt indexPath: IndexPath
+	) -> CGSize {
 		let leftInset = self.pokemonListCollectionViewInsetsForSection.left
 		let rightInset = self.pokemonListCollectionViewInsetsForSection.right
 		
@@ -174,25 +194,28 @@ extension PokemonListView: UICollectionViewDelegateFlowLayout {
 		return CGSize(width: widthPerItem, height: widthPerItem * 3/4)
 	}
 	
-	func collectionView(_ collectionView: UICollectionView,
-						layout collectionViewLayout: UICollectionViewLayout,
-						insetForSectionAt section: Int) -> UIEdgeInsets {
-		
-		return self.pokemonListCollectionViewInsetsForSection
+	func collectionView(
+		_ collectionView: UICollectionView,
+		layout collectionViewLayout: UICollectionViewLayout,
+		insetForSectionAt section: Int
+	) -> UIEdgeInsets {
+		self.pokemonListCollectionViewInsetsForSection
 	}
 	
-	func collectionView(_ collectionView: UICollectionView,
-						layout collectionViewLayout: UICollectionViewLayout,
-						minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-		
-		return self.minimumLineSpacingForSection
+	func collectionView(
+		_ collectionView: UICollectionView,
+		layout collectionViewLayout: UICollectionViewLayout,
+		minimumLineSpacingForSectionAt section: Int
+	) -> CGFloat {
+		self.minimumLineSpacingForSection
 	}
 	
-	func collectionView(_ collectionView: UICollectionView,
-						layout collectionViewLayout: UICollectionViewLayout,
-						minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-		
-		return self.minimumInteritemSpacingForSection
+	func collectionView(
+		_ collectionView: UICollectionView,
+		layout collectionViewLayout: UICollectionViewLayout,
+		minimumInteritemSpacingForSectionAt section: Int
+	) -> CGFloat {
+		self.minimumInteritemSpacingForSection
 	}
 }
 

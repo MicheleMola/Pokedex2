@@ -40,7 +40,10 @@ class PokemonListViewController: UIViewController {
 		
 		self.setupInteractions()
 		
-		self.loadPokemons(fromOffset: 0, withLimit: self.pokemonsPerPage)
+		self.loadPokemons(
+			fromOffset: 0,
+			withLimit: self.pokemonsPerPage
+		)
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
@@ -60,7 +63,10 @@ class PokemonListViewController: UIViewController {
 			// Check if is downloading
 			if row == numberOfPokemons - 1 && numberOfPokemons < self.pokemonMax && !self.isDownloading {
 				
-				self.loadPokemons(fromOffset: numberOfPokemons, withLimit: self.pokemonsPerPage)
+				self.loadPokemons(
+					fromOffset: numberOfPokemons,
+					withLimit: self.pokemonsPerPage
+				)
 			}
 		}
 		
@@ -74,29 +80,33 @@ class PokemonListViewController: UIViewController {
 		}
 	}
 	
-	private func loadPokemons(fromOffset offset: Int, withLimit limit: Int) {
+	private func loadPokemons(
+		fromOffset offset: Int,
+		withLimit limit: Int
+	) {
 		self.setDownloadingStatus(to: true)
 		
-		self.pokedexAPIClient.getPokemonList(withOffset: offset, andLimit: limit, completion: { [weak self] response in
-			
-			guard let self = self else { return }
-			
-			switch response {
-				case .success(let response):
-					guard let response = response else { return }
-					
-					self.getPokemonsDetail(from: response.results)
+		self.pokedexAPIClient.getPokemonList(
+			withOffset: offset,
+			andLimit: limit,
+			completion: { [weak self] response in
+				guard let self = self else { return }
 				
-				case .failure:
-					self.setDownloadingStatus(to: false)
+				switch response {
+					case .success(let response):
+						guard let response = response else { return }
+						
+						self.getPokemonsDetail(from: response.results)
 					
-					self.showAlert(withTitle: "Warning", andMessage: "Oops, something went wrong. Please try again later.")
-			}
+					case .failure:
+						self.setDownloadingStatus(to: false)
+						
+						self.showAlert(withTitle: "Warning", andMessage: "Oops, something went wrong. Please try again later.")
+				}
 		})
 	}
 	
 	private func getPokemonsDetail(from pokemonsReference: [PokemonReference]) {
-		
 		let dispatchGroup = DispatchGroup()
 		
 		pokemonsReference.forEach { pokemonReference in
@@ -120,11 +130,8 @@ class PokemonListViewController: UIViewController {
 		}
 		
 		dispatchGroup.notify(queue: .main) {
-			
 			self.pokemons.sort(by: { $0.id < $1.id })
-			
 			self.pokemonListView.viewModel = PokemonListViewModel(pokemons: self.pokemons)
-			
 			self.setDownloadingStatus(to: false)
 		}
 	}
