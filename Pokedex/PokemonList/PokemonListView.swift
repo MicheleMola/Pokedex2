@@ -38,8 +38,9 @@ class PokemonListView: UIView {
 		return UIEdgeInsets(top: 16, left: 16, bottom: 0, right: 16)
 	}
 	
-	private let minimumInteritemSpacingForSection: CGFloat = 16
-	private let minimumLineSpacingForSection: CGFloat = 16
+	private static let minimumInteritemSpacingForSection: CGFloat = 16
+	private static let minimumLineSpacingForSection: CGFloat = 16
+	private static let cellHeight: CGFloat = 120
 	
 	private let pokeBallLoader = PokeBallLoader()
 	private let pokemonsCollectionViewFooterReusableIdentifier = "PokemonsCollectionViewFooterReusableIdentifier"
@@ -187,11 +188,10 @@ extension PokemonListView: UICollectionViewDelegateFlowLayout {
 		let leftInset = self.pokemonListCollectionViewInsetsForSection.left
 		let rightInset = self.pokemonListCollectionViewInsetsForSection.right
 		
-		let totInsets = leftInset + rightInset + self.minimumInteritemSpacingForSection
-		
-		let widthPerItem = (self.pokemonsCollectionView.bounds.width - totInsets) / 2
-
-		return CGSize(width: widthPerItem, height: widthPerItem * 3/4)
+		let totalInsets = leftInset + rightInset
+		let widthPerItem: CGFloat = self.pokemonsCollectionView.bounds.width - totalInsets
+	
+		return CGSize(width: widthPerItem, height: Self.cellHeight)
 	}
 	
 	func collectionView(
@@ -207,7 +207,7 @@ extension PokemonListView: UICollectionViewDelegateFlowLayout {
 		layout collectionViewLayout: UICollectionViewLayout,
 		minimumLineSpacingForSectionAt section: Int
 	) -> CGFloat {
-		self.minimumLineSpacingForSection
+		Self.minimumLineSpacingForSection
 	}
 	
 	func collectionView(
@@ -215,7 +215,7 @@ extension PokemonListView: UICollectionViewDelegateFlowLayout {
 		layout collectionViewLayout: UICollectionViewLayout,
 		minimumInteritemSpacingForSectionAt section: Int
 	) -> CGFloat {
-		self.minimumInteritemSpacingForSection
+		Self.minimumInteritemSpacingForSection
 	}
 }
 

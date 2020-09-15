@@ -25,7 +25,6 @@ class ImageLoader {
 		let uuid = UUID()
 		
 		let task = URLSession.shared.dataTask(with: url) { data, response, error in
-			
 			defer { self.runningRequests.removeValue(forKey: uuid) }
 			
 			if let data = data, let image = UIImage(data: data) {
@@ -59,17 +58,14 @@ class ImageLoader {
 
 class UIImageLoader {
 	static let loader = UIImageLoader()
-	
 	private let imageLoader = ImageLoader()
 	private var uuidMap = [UIImageView: UUID]()
+//	private var uuidCollection: [UUID] = []
 	
 	private init() {}
 	
-	func load(
-		_ url: URL,
-		for imageView: UIImageView
-	) {
-		let token = imageLoader.loadImage(url) { result in
+	func load(_ url: URL, for imageView: UIImageView) {
+		let token = self.imageLoader.loadImage(url) { result in
 			
 			defer { self.uuidMap.removeValue(forKey: imageView) }
 			

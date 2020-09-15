@@ -93,22 +93,22 @@ class PokemonCell: UICollectionViewCell {
 		self.whitePokeballImageView.image = UIImage(named: "whitePokeball")
 		self.whitePokeballImageView.alpha = 0.2
 		
-		self.pokemonImageView.contentMode = .scaleAspectFit
+		self.pokemonImageView.contentMode = .scaleAspectFill
 		
-		self.nameLabel.font = UIFont.boldSystemFont(ofSize: 16)
+		self.nameLabel.font = UIFont.boldSystemFont(ofSize: 18)
 		self.nameLabel.textColor = .white
 		
 		self.idLabel.font = UIFont.boldSystemFont(ofSize: 16)
-		self.idLabel.textColor = .white
+		self.idLabel.textColor = .black
 		
 		self.firstTypeLabel.textAlignment = .center
-		self.firstTypeLabel.font = UIFont.systemFont(ofSize: 13, weight: .semibold)
+		self.firstTypeLabel.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
 		self.firstTypeLabel.textColor = .white
 		self.firstTypeLabel.backgroundColor = UIColor.white.withAlphaComponent(0.2)
 		self.firstTypeLabel.layer.masksToBounds = true
 		
 		self.secondTypeLabel.textAlignment = .center
-		self.secondTypeLabel.font = UIFont.systemFont(ofSize: 13, weight: .semibold)
+		self.secondTypeLabel.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
 		self.secondTypeLabel.textColor = .white
 		self.secondTypeLabel.backgroundColor = UIColor.white.withAlphaComponent(0.2)
 		self.secondTypeLabel.layer.masksToBounds = true
@@ -132,28 +132,27 @@ class PokemonCell: UICollectionViewCell {
 	}
 	
 	private func layout() {
-		self.nameLabel.translatesAutoresizingMaskIntoConstraints = false
-		let nameLabelConstraints = [
-			self.nameLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
-			self.nameLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 24),
-			self.nameLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor)
-		]
-		NSLayoutConstraint.activate(nameLabelConstraints)
-		
 		self.idLabel.translatesAutoresizingMaskIntoConstraints = false
 		let idLabelContraints = [
-			self.idLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 8),
-			self.idLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16),
-			self.idLabel.leadingAnchor.constraint(greaterThanOrEqualTo: self.leadingAnchor)
+			self.idLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 16),
+			self.idLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
+			self.idLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor)
 		]
 		NSLayoutConstraint.activate(idLabelContraints)
+		
+		self.nameLabel.translatesAutoresizingMaskIntoConstraints = false
+		let nameLabelConstraints = [
+			self.nameLabel.topAnchor.constraint(equalTo: self.idLabel.bottomAnchor, constant: 8),
+			self.nameLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16)
+		]
+		NSLayoutConstraint.activate(nameLabelConstraints)
 		
 		self.whitePokeballImageView.translatesAutoresizingMaskIntoConstraints = false
 		let whitePokeballImageViewContraints = [
 			self.whitePokeballImageView.widthAnchor.constraint(equalToConstant: 88),
 			self.whitePokeballImageView.heightAnchor.constraint(equalToConstant: 88),
 			self.whitePokeballImageView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 16),
-			self.whitePokeballImageView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 8)
+			self.whitePokeballImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor)
 		]
 		NSLayoutConstraint.activate(whitePokeballImageViewContraints)
 		
@@ -161,26 +160,27 @@ class PokemonCell: UICollectionViewCell {
 		let pokemonImageViewConstraints = [
 			self.pokemonImageView.widthAnchor.constraint(equalToConstant: 80),
 			self.pokemonImageView.heightAnchor.constraint(equalToConstant: 80),
-			self.pokemonImageView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-			self.pokemonImageView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -8)
+			self.pokemonImageView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 0),
+			self.pokemonImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor)
 		]
 		NSLayoutConstraint.activate(pokemonImageViewConstraints)
 		
 		self.firstTypeLabel.translatesAutoresizingMaskIntoConstraints = false
 		let firstTypeLabelConstraints = [
 			self.firstTypeLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
-			self.firstTypeLabel.topAnchor.constraint(equalTo: self.nameLabel.bottomAnchor, constant: 10),
-			self.firstTypeLabel.heightAnchor.constraint(equalToConstant: 24),
-			self.firstTypeLabel.trailingAnchor.constraint(equalTo: self.pokemonImageView.leadingAnchor, constant: -8)
+			self.firstTypeLabel.topAnchor.constraint(equalTo: self.nameLabel.bottomAnchor, constant: 8),
+			self.firstTypeLabel.heightAnchor.constraint(equalToConstant: 28),
+			self.firstTypeLabel.widthAnchor.constraint(equalToConstant: 68),
+//			self.firstTypeLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -16)
 		]
 		NSLayoutConstraint.activate(firstTypeLabelConstraints)
 		
 		self.secondTypeLabel.translatesAutoresizingMaskIntoConstraints = false
 		let secondTypeLabelConstraints = [
-			self.secondTypeLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
-			self.secondTypeLabel.topAnchor.constraint(equalTo: self.firstTypeLabel.bottomAnchor, constant: 10),
-			self.secondTypeLabel.heightAnchor.constraint(equalToConstant: 24),
-			self.secondTypeLabel.trailingAnchor.constraint(equalTo: self.pokemonImageView.leadingAnchor, constant: -8)
+			self.secondTypeLabel.leadingAnchor.constraint(equalTo: self.firstTypeLabel.trailingAnchor, constant: 8),
+			self.secondTypeLabel.centerYAnchor.constraint(equalTo: self.firstTypeLabel.centerYAnchor),
+			self.secondTypeLabel.heightAnchor.constraint(equalToConstant: 28),
+			self.secondTypeLabel.widthAnchor.constraint(equalToConstant: 68)
 		]
 		NSLayoutConstraint.activate(secondTypeLabelConstraints)
 		
@@ -193,6 +193,6 @@ class PokemonCell: UICollectionViewCell {
 		self.firstTypeLabel.layer.cornerRadius = self.firstTypeLabel.bounds.height / 2
 		self.secondTypeLabel.layer.cornerRadius = self.secondTypeLabel.bounds.height / 2
 		
-		self.contentView.layer.cornerRadius = self.contentView.bounds.height / 10
+		self.contentView.layer.cornerRadius = self.contentView.bounds.height / 10		
 	}
 }

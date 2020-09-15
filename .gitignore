@@ -54,13 +54,13 @@ Pods/
 *.xcworkspace
 
 ## Xcode Patch
-*.xcodeproj/*
-!*.xcodeproj/project.pbxproj
-!*.xcodeproj/xcshareddata/
-!*.xcworkspace/contents.xcworkspacedata
-/*.gcno
+#*.xcodeproj/*
+#!*.xcodeproj/project.pbxproj
+#!*.xcodeproj/xcshareddata/
+#!*.xcworkspace/contents.xcworkspacedata
+#/*.gcno
 #*.pbxproj
-*.xcodeproj
+#*.xcodeproj
 
 ### Xcode Patch ###
 **/xcshareddata/WorkspaceSettings.xcsettings

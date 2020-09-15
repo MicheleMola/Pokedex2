@@ -85,7 +85,7 @@ class PokemonDetailTableViewHeader: UIView {
 		self.nameLabel.textColor = .white
 		
 		self.idLabel.font = UIFont.systemFont(ofSize: 24, weight: .semibold)
-		self.idLabel.textColor = .white
+		self.idLabel.textColor = .black
 		
 		self.firstTypeLabel.layer.masksToBounds = true
 		self.firstTypeLabel.backgroundColor = UIColor.white.withAlphaComponent(0.2)
@@ -121,22 +121,22 @@ class PokemonDetailTableViewHeader: UIView {
 		
 		self.idLabel.translatesAutoresizingMaskIntoConstraints = false
 		let idLabelConstraints = [
-			self.idLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16),
-			self.idLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 48)
+			self.idLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
+			self.idLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 72)
 		]
 		NSLayoutConstraint.activate(idLabelConstraints)
 		
 		self.nameLabel.translatesAutoresizingMaskIntoConstraints = false
 		let nameLabelConstraints = [
-			self.nameLabel.topAnchor.constraint(equalTo: self.idLabel.bottomAnchor, constant: 4),
-			self.nameLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
+			self.nameLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 72),
+			self.nameLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
 			self.nameLabel.trailingAnchor.constraint(greaterThanOrEqualTo: self.trailingAnchor)
 		]
 		NSLayoutConstraint.activate(nameLabelConstraints)
 		
 		self.firstTypeLabel.translatesAutoresizingMaskIntoConstraints = false
 		let firstTypeLabelConstraints = [
-			self.firstTypeLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
+			self.firstTypeLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
 			self.firstTypeLabel.topAnchor.constraint(equalTo: self.nameLabel.bottomAnchor, constant: 16),
 			self.firstTypeLabel.widthAnchor.constraint(equalToConstant: 100),
 			self.firstTypeLabel.heightAnchor.constraint(equalToConstant: 32)

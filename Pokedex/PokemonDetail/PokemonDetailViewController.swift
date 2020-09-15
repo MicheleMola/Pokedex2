@@ -26,5 +26,17 @@ class PokemonDetailViewController: UIViewController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		
+		self.setupInteractions()
+	}
+	
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+	}
+	
+	private func setupInteractions() {
+//		self.pokemonDetailView.didPressCloseButton = { [unowned self] in
+//			self.dismiss(animated: true)
+//		}
 	}
 }

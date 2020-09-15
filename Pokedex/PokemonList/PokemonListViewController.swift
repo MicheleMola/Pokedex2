@@ -15,11 +15,11 @@ class PokemonListViewController: UIViewController {
 	var isDownloading = false
 	
 	// Total of pokemons to download from API
-	let pokemonMax = 790
-	
+	static let pokemonMax = 790
+	static let pokemonsPerPage = 20
+
 	var pokemons: [Pokemon] = []
-	
-	let pokemonsPerPage = 20
+	var isSettedFirstPokemon = false
 	
 	override func loadView() {
 		self.view = self.pokemonListView
@@ -40,10 +40,7 @@ class PokemonListViewController: UIViewController {
 		
 		self.setupInteractions()
 		
-		self.loadPokemons(
-			fromOffset: 0,
-			withLimit: self.pokemonsPerPage
-		)
+		self.loadPokemons(fromOffset: 0, withLimit: Self.pokemonsPerPage)
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
@@ -51,6 +48,8 @@ class PokemonListViewController: UIViewController {
 		
 		self.title = "Pokedex"
 		self.navigationController?.navigationBar.prefersLargeTitles = true
+		self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+		self.navigationController?.navigationBar.tintColor = .black
 	}
 	
 	private func setupInteractions() {
@@ -61,11 +60,11 @@ class PokemonListViewController: UIViewController {
 			// Check if the collection will display the last row in order to load new contents
 			// Check if there are new contents to load
 			// Check if is downloading
-			if row == numberOfPokemons - 1 && numberOfPokemons < self.pokemonMax && !self.isDownloading {
+			if row == numberOfPokemons - 1 && numberOfPokemons < Self.pokemonMax && !self.isDownloading {
 				
 				self.loadPokemons(
 					fromOffset: numberOfPokemons,
-					withLimit: self.pokemonsPerPage
+					withLimit: Self.pokemonsPerPage
 				)
 			}
 		}
@@ -73,11 +72,14 @@ class PokemonListViewController: UIViewController {
 		self.pokemonListView.didSelectPokemonAtRow = { [unowned self] row in
 			let pokemon = self.pokemons[row]
 			
-			let pokemonDetailViewModel = PokemonDetailViewModel(pokemon: pokemon)
-			let pokemonDetailViewController = PokemonDetailViewController(viewModel: pokemonDetailViewModel)
-			
-			self.present(pokemonDetailViewController, animated: true, completion: nil)
+			self.showDetail(with: pokemon)
 		}
+	}
+	
+	private func showDetail(with pokemon: Pokemon) {
+		let pokemonDetailViewModel = PokemonDetailViewModel(pokemon: pokemon)
+		let pokemonDetailViewController = PokemonDetailViewController(viewModel: pokemonDetailViewModel)
+		self.showDetailViewController(pokemonDetailViewController, sender: nil)
 	}
 	
 	private func loadPokemons(
@@ -133,6 +135,19 @@ class PokemonListViewController: UIViewController {
 			self.pokemons.sort(by: { $0.id < $1.id })
 			self.pokemonListView.viewModel = PokemonListViewModel(pokemons: self.pokemons)
 			self.setDownloadingStatus(to: false)
+			
+			self.setFirstPokemon()
+		}
+	}
+	
+	private func setFirstPokemon() {
+		if
+			UIDevice.current.userInterfaceIdiom == .pad,
+			!self.isSettedFirstPokemon,
+			let firstPokemon = self.pokemons.first
+		{
+			self.showDetail(with: firstPokemon)
+			self.isSettedFirstPokemon = true
 		}
 	}
 	

@@ -18,11 +18,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		let pokemonListViewController = PokemonListViewController(viewModel: nil)
 		let navController = UINavigationController(rootViewController: pokemonListViewController)
 		
+		let pokemonDetailViewController = PokemonDetailViewController(viewModel: nil)
+//		let detailNavController = UINavigationController(rootViewController: pokemonDetailViewController)
+		
+		let splitViewController = UISplitViewController()
+		splitViewController.viewControllers = [navController, pokemonDetailViewController]
+		splitViewController.preferredDisplayMode = .allVisible
+		splitViewController.delegate = self
+		
 		let w = UIWindow()
-		w.rootViewController = navController
+		w.rootViewController = splitViewController
 		self.window = w
 		w.makeKeyAndVisible()
 		
+		return true
+	}
+}
+
+extension AppDelegate: UISplitViewControllerDelegate {
+	func splitViewController(_ splitViewController: UISplitViewController, collapseSecondary secondaryViewController: UIViewController, onto primaryViewController: UIViewController) -> Bool {
 		return true
 	}
 }
