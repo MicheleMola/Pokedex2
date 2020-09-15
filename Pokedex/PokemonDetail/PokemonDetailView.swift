@@ -9,6 +9,14 @@ import UIKit
 
 struct PokemonDetailViewModel {
 	let pokemon: Pokemon
+	
+	func stat(at index: Int) -> StatResponse? {
+		self.pokemon.stats[index]
+	}
+	
+	var primaryColor: UIColor? {
+		self.pokemon.primaryType?.getColor()
+	}
 }
 
 class PokemonDetailView: UIView {
@@ -19,6 +27,9 @@ class PokemonDetailView: UIView {
 	}
 	
 	private let pokemonDetailTableView = UITableView(frame: .zero, style: .grouped)
+	
+	private static let headerHeight: CGFloat = 400
+	private static let cellHeight: CGFloat = 60
 		
 	override init(frame: CGRect) {
 		super.init(frame: frame)
@@ -83,7 +94,7 @@ extension PokemonDetailView: UITableViewDataSource {
 			case 0:
 				let cell = tableView.dequeueReusableCell(withIdentifier: PokemonStatsTitleCell.reusableIdentifier, for: indexPath) as! PokemonStatsTitleCell
 				
-				if let pokemonTypeColor = viewModel?.pokemon.primaryType?.getColor() {
+				if let pokemonTypeColor = viewModel?.primaryColor {
 					cell.viewModel = PokemonStatsTitleCellViewModel(pokemonTypeColor: pokemonTypeColor)
 				}
 				
@@ -92,8 +103,14 @@ extension PokemonDetailView: UITableViewDataSource {
 				let cell = tableView.dequeueReusableCell(withIdentifier: PokemonStatCell.reusableIdentifier, for: indexPath) as! PokemonStatCell
 				
 				let index = indexPath.row - 1
-				if let stat = viewModel?.pokemon.stats[index], let primaryTypeColor = viewModel?.pokemon.primaryType?.getColor() {
-					let pokemonStatCellViewModel = PokemonStatCellViewModel(title: StatTitle.allCases[index].rawValue, stat: stat, pokemonTypeColor: primaryTypeColor)
+				if
+					let stat = viewModel?.stat(at: index),
+					let primaryTypeColor = viewModel?.primaryColor
+				{
+					let pokemonStatCellViewModel = PokemonStatCellViewModel(
+						title: StatTitle.allCases[index].rawValue,
+						stat: stat, pokemonTypeColor: primaryTypeColor
+					)
 					
 					cell.viewModel = pokemonStatCellViewModel
 				}
@@ -107,7 +124,7 @@ extension PokemonDetailView: UITableViewDataSource {
 extension PokemonDetailView: UITableViewDelegate {
 	func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
 		switch indexPath.row {
-			case 0...6: return 60
+			case 0...6: return Self.cellHeight
 			default: return 0
 		}
 	}
@@ -123,7 +140,7 @@ extension PokemonDetailView: UITableViewDelegate {
 	}
 	
 	func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-		return 400
+		Self.headerHeight
 	}
 }
 

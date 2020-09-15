@@ -31,15 +31,12 @@ class PokeBallLoader: UIView {
 	
 	private func style() {		
 		self.pokeBallImageView.image = UIImage(named: "pokeball")
-		
 		self.pokeBallImageView.contentMode = .scaleAspectFit
-		
 		self.pokeBallImageView.alpha = 0
 	}
 	
 	private func layout() {
 		self.pokeBallImageView.translatesAutoresizingMaskIntoConstraints = false
-		
 		let constraints = [
 			self.pokeBallImageView.topAnchor.constraint(equalTo: self.topAnchor),
 			self.pokeBallImageView.leftAnchor.constraint(equalTo: self.leftAnchor),
@@ -62,7 +59,6 @@ class PokeBallLoader: UIView {
 	
 	func dismiss() {
 		self.pokeBallImageView.alpha = 0
-		
 		self.pokeBallImageView.transform = .identity
 	}
 }

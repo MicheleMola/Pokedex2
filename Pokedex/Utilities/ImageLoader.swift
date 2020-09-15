@@ -55,6 +55,7 @@ class ImageLoader {
 	}
 }
 
+/// Class to use as singleton to load and cancel image for UIImageView
 class UIImageLoader {
 	static let shared = UIImageLoader()
 	private let imageLoader = ImageLoader()

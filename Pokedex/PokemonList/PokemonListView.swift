@@ -12,7 +12,6 @@ struct PokemonListViewModel {
 }
 
 class PokemonListView: UIView {
-	
 	// MARK: - Public properties
 	var viewModel: PokemonListViewModel? {
 		didSet {
