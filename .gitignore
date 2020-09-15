@@ -53,15 +53,6 @@ Pods/
 # Add this line if you want to avoid checking in source code from the Xcode workspace
 *.xcworkspace
 
-## Xcode Patch
-#*.xcodeproj/*
-#!*.xcodeproj/project.pbxproj
-#!*.xcodeproj/xcshareddata/
-#!*.xcworkspace/contents.xcworkspacedata
-#/*.gcno
-#*.pbxproj
-#*.xcodeproj
-
 ### Xcode Patch ###
 **/xcshareddata/WorkspaceSettings.xcsettings
 

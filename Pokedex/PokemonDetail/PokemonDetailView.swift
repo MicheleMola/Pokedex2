@@ -22,10 +22,7 @@ class PokemonDetailView: UIView {
 		frame: .zero,
 		style: .grouped
 	)
-	
-//	private let closeButton = UIButton()
-//	var didPressCloseButton: (() -> ())?
-	
+		
 	override init(frame: CGRect) {
 		super.init(frame: frame)
 		
@@ -50,14 +47,7 @@ class PokemonDetailView: UIView {
 			forCellReuseIdentifier: PokemonStatsTitleCell.reusableIdentifier
 		)
 		
-//		self.closeButton.addTarget(
-//			self,
-//			action: #selector(self.didPressClose(_:)),
-//			for: .touchUpInside
-//		)
-		
 		self.addSubview(self.pokemonDetailTableView)
-//		self.addSubview(self.closeButton)
 	}
 	
 	private func style() {
@@ -68,8 +58,6 @@ class PokemonDetailView: UIView {
 		self.pokemonDetailTableView.bounces = false
 		self.pokemonDetailTableView.allowsSelection = false
 		self.pokemonDetailTableView.contentInsetAdjustmentBehavior = .never
-		
-//		self.closeButton.setImage(UIImage(named: "closeButton"), for: .normal)
 	}
 	
 	private func layout() {
@@ -81,24 +69,11 @@ class PokemonDetailView: UIView {
 			self.pokemonDetailTableView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
 		]
 		NSLayoutConstraint.activate(pokemonDetailTableViewConstraints)
-		
-//		self.closeButton.translatesAutoresizingMaskIntoConstraints = false
-//		let closeButtonConstraints = [
-//			self.closeButton.widthAnchor.constraint(equalToConstant: 34),
-//			self.closeButton.heightAnchor.constraint(equalToConstant: 34),
-//			self.closeButton.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -20),
-//			self.closeButton.topAnchor.constraint(equalTo: self.topAnchor, constant: 24)
-//		]
-//		NSLayoutConstraint.activate(closeButtonConstraints)
 	}
 	
 	private func update() {
 		self.pokemonDetailTableView.reloadData()
 	}
-	
-//	@objc private func didPressClose(_ button: UIButton) {
-//		self.didPressCloseButton?()
-//	}
 }
 
 extension PokemonDetailView: UITableViewDataSource {
