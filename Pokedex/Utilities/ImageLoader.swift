@@ -8,16 +8,15 @@
 
 import UIKit
 
-let cache = NSCache<NSURL, UIImage>()
-
 class ImageLoader {
 	private var runningRequests = [UUID: URLSessionDataTask]()
-	
+	private let cache = NSCache<NSURL, UIImage>()
+
 	func loadImage(
 		_ url: URL,
 		_ completion: @escaping (Result<UIImage, Error>) -> Void
 	) -> UUID? {
-		if let image = cache.object(forKey: url as NSURL) {
+		if let image = self.cache.object(forKey: url as NSURL) {
 			completion(.success(image))
 			return nil
 		}
@@ -28,7 +27,7 @@ class ImageLoader {
 			defer { self.runningRequests.removeValue(forKey: uuid) }
 			
 			if let data = data, let image = UIImage(data: data) {
-				cache.setObject(image, forKey: url as NSURL)
+				self.cache.setObject(image, forKey: url as NSURL)
 				completion(.success(image))
 				return
 			}
@@ -46,21 +45,20 @@ class ImageLoader {
 		}
 		task.resume()
 		
-		runningRequests[uuid] = task
+		self.runningRequests[uuid] = task
 		return uuid
 	}
 	
 	func cancelLoad(_ uuid: UUID) {
-		runningRequests[uuid]?.cancel()
-		runningRequests.removeValue(forKey: uuid)
+		self.runningRequests[uuid]?.cancel()
+		self.runningRequests.removeValue(forKey: uuid)
 	}
 }
 
 class UIImageLoader {
-	static let loader = UIImageLoader()
+	static let shared = UIImageLoader()
 	private let imageLoader = ImageLoader()
 	private var uuidMap = [UIImageView: UUID]()
-//	private var uuidCollection: [UUID] = []
 	
 	private init() {}
 	
@@ -69,36 +67,35 @@ class UIImageLoader {
 			
 			defer { self.uuidMap.removeValue(forKey: imageView) }
 			
-			do {
-				let image = try result.get()
+			switch result {
+			case .success(let image):
 				DispatchQueue.main.async {
 					imageView.image = image
 				}
-			} catch let error {
-				// handle the error
+			case .failure(let error):
 				print(error)
 			}
 		}
 		
 		if let token = token {
-			uuidMap[imageView] = token
+			self.uuidMap[imageView] = token
 		}
 	}
 	
 	func cancel(for imageView: UIImageView) {
 		if let uuid = uuidMap[imageView] {
-			imageLoader.cancelLoad(uuid)
-			uuidMap.removeValue(forKey: imageView)
+			self.imageLoader.cancelLoad(uuid)
+			self.uuidMap.removeValue(forKey: imageView)
 		}
 	}
 }
 
 extension UIImageView {
 	func loadImage(at url: URL) {
-		UIImageLoader.loader.load(url, for: self)
+		UIImageLoader.shared.load(url, for: self)
 	}
 	
 	func cancelImageLoad() {
-		UIImageLoader.loader.cancel(for: self)
+		UIImageLoader.shared.cancel(for: self)
 	}
 }

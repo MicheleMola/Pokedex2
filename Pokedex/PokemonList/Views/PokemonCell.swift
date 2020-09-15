@@ -171,7 +171,6 @@ class PokemonCell: UICollectionViewCell {
 			self.firstTypeLabel.topAnchor.constraint(equalTo: self.nameLabel.bottomAnchor, constant: 8),
 			self.firstTypeLabel.heightAnchor.constraint(equalToConstant: 28),
 			self.firstTypeLabel.widthAnchor.constraint(equalToConstant: 68),
-//			self.firstTypeLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -16)
 		]
 		NSLayoutConstraint.activate(firstTypeLabelConstraints)
 		

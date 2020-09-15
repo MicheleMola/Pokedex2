@@ -122,13 +122,13 @@ class PokemonDetailTableViewHeader: UIView {
 		self.idLabel.translatesAutoresizingMaskIntoConstraints = false
 		let idLabelConstraints = [
 			self.idLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
-			self.idLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 72)
+			self.idLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 96)
 		]
 		NSLayoutConstraint.activate(idLabelConstraints)
 		
 		self.nameLabel.translatesAutoresizingMaskIntoConstraints = false
 		let nameLabelConstraints = [
-			self.nameLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 72),
+			self.nameLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 96),
 			self.nameLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
 			self.nameLabel.trailingAnchor.constraint(greaterThanOrEqualTo: self.trailingAnchor)
 		]

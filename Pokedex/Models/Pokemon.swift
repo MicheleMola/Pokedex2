@@ -22,14 +22,12 @@ struct PokemonReferenceList: Codable {
 	let results: [PokemonReference]
 }
 
-struct Pokemon: Codable {
+struct Pokemon: Codable, Equatable {
 	let name: String
 	let id: Int
 	let types: [TypeResponse]
 	let sprites: Sprites
 	let stats: [StatResponse]
-	let weight: Int
-	let height: Int
 	
 	var imageURL: URL? {
 		URL(string: "https://pokeres.bastionbot.org/images/pokemon/\(id).png")
@@ -38,6 +36,10 @@ struct Pokemon: Codable {
 	var primaryType: PokemonType? {
 		guard let type = types.first?.type.name else { return nil }
 		return PokemonType(rawValue: type)
+	}
+	
+	static func == (lhs: Pokemon, rhs: Pokemon) -> Bool {
+		lhs.name == rhs.name && lhs.id == rhs.id
 	}
 }
 
@@ -58,7 +60,8 @@ struct StatResponse: Codable {
 	let stat: NameResponse
 	
 	private enum CodingKeys: String, CodingKey {
-		case baseStat = "base_stat", stat
+		case baseStat = "base_stat"
+		case stat
 	}
 }
 

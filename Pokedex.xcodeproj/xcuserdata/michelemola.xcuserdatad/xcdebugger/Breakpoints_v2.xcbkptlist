@@ -14,8 +14,8 @@
             filePath = "Pokedex/Utilities/ImageLoader.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "28"
-            endingLineNumber = "28"
+            startingLineNumber = "27"
+            endingLineNumber = "27"
             landmarkName = "loadImage(_:_:)"
             landmarkType = "7">
             <Locations>
@@ -30,9 +30,9 @@
                   urlString = "file:///Users/michelemola/Desktop/MyProjects/Pokedex2/Pokedex/Utilities/ImageLoader.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "29"
-                  endingLineNumber = "29"
-                  offsetFromSymbolStart = "961">
+                  startingLineNumber = "27"
+                  endingLineNumber = "27"
+                  offsetFromSymbolStart = "848">
                </Location>
                <Location
                   uuid = "9E94341D-163D-4AD6-A38D-E1AA20310015 - 34e8d850583b68f2"
@@ -45,9 +45,9 @@
                   urlString = "file:///Users/michelemola/Desktop/MyProjects/Pokedex2/Pokedex/Utilities/ImageLoader.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "29"
-                  endingLineNumber = "29"
-                  offsetFromSymbolStart = "1026">
+                  startingLineNumber = "27"
+                  endingLineNumber = "27"
+                  offsetFromSymbolStart = "896">
                </Location>
                <Location
                   uuid = "9E94341D-163D-4AD6-A38D-E1AA20310015 - e68e02114e77c9a9"
@@ -60,9 +60,9 @@
                   urlString = "file:///Users/michelemola/Desktop/MyProjects/Pokedex2/Pokedex/Utilities/ImageLoader.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "29"
-                  endingLineNumber = "29"
-                  offsetFromSymbolStart = "34">
+                  startingLineNumber = "27"
+                  endingLineNumber = "27"
+                  offsetFromSymbolStart = "104">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -70,49 +70,17 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "4A1F510A-2D18-4713-B20A-23209EE49B0D"
+            uuid = "EC67EBFB-C62D-420D-8A45-67C89BA571F9"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Pokedex/Utilities/ImageLoader.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "70"
-            endingLineNumber = "70"
-            landmarkName = "load(_:for:)"
+            startingLineNumber = "30"
+            endingLineNumber = "30"
+            landmarkName = "loadImage(_:_:)"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "4A1F510A-2D18-4713-B20A-23209EE49B0D - 79ef4f1b33cdfacd"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (Swift.Result&lt;__C.UIImage, Swift.Error&gt;) -&gt; () in Pokedex.UIImageLoader.load(_: Foundation.URL, for: __C.UIImageView) -&gt; ()"
-                  moduleName = "Pokedex"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/michelemola/Desktop/MyProjects/Pokedex2/Pokedex/Utilities/ImageLoader.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "71"
-                  endingLineNumber = "71"
-                  offsetFromSymbolStart = "855">
-               </Location>
-               <Location
-                  uuid = "4A1F510A-2D18-4713-B20A-23209EE49B0D - da532b826ef7e1a6"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "$defer #1 () -&gt; () in closure #1 (Swift.Result&lt;__C.UIImage, Swift.Error&gt;) -&gt; () in Pokedex.UIImageLoader.load(_: Foundation.URL, for: __C.UIImageView) -&gt; ()"
-                  moduleName = "Pokedex"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/michelemola/Desktop/MyProjects/Pokedex2/Pokedex/Utilities/ImageLoader.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "71"
-                  endingLineNumber = "71"
-                  offsetFromSymbolStart = "107">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

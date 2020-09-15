@@ -48,7 +48,6 @@ class PokeBallLoader: UIView {
 			self.pokeBallImageView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
 			self.pokeBallImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor)
 		]
-		
 		NSLayoutConstraint.activate(constraints)
 	}
 	
