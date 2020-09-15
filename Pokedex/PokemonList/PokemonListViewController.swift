@@ -8,17 +8,22 @@
 import UIKit
 
 class PokemonListViewController: UIViewController {
+	/// Main View associated to ViewController
 	let pokemonListView = PokemonListView()
 	
+	/// API Client to load pokemons
 	let pokedexAPIClient = PokedexAPIClient()
 	
+	/// Download status to avoid multiple calls to API
 	var isDownloading = false
 	
-	// Total of pokemons to download from API
+	/// Max number of pokemons to download from API
 	static let pokemonMax = 790
+	
 	static let pokemonsPerPage = 20
-
 	var pokemons: [Pokemon] = []
+	
+	/// Semaphore to indicate that the first pokemon is already setted in the detail screen
 	var isSettedFirstPokemon = false
 	
 	override func loadView() {
@@ -82,10 +87,8 @@ class PokemonListViewController: UIViewController {
 		self.showDetailViewController(pokemonDetailViewController, sender: nil)
 	}
 	
-	private func loadPokemons(
-		fromOffset offset: Int,
-		withLimit limit: Int
-	) {
+	/// Load paginated pokemons references from API Client
+	private func loadPokemons(fromOffset offset: Int, withLimit limit: Int) {
 		self.setDownloadingStatus(to: true)
 		
 		self.pokedexAPIClient.getPokemonList(
@@ -108,13 +111,14 @@ class PokemonListViewController: UIViewController {
 		})
 	}
 	
+	/// Get more details(types, sprites, ecc...) from pokemonReference collections
 	private func getPokemonsDetail(from pokemonsReference: [PokemonReference]) {
 		let dispatchGroup = DispatchGroup()
 		
 		pokemonsReference.forEach { pokemonReference in
 			dispatchGroup.enter()
 			
-			self.pokedexAPIClient.getPokemon(byId: pokemonReference.id, completion: { [weak self] response in
+			self.pokedexAPIClient.getPokemon(byId: pokemonReference.id) { [weak self] response in
 				defer { dispatchGroup.leave() }
 				
 				guard let self = self else { return }
@@ -128,7 +132,7 @@ class PokemonListViewController: UIViewController {
 					case .failure(let error):
 						print(error)
 				}
-			})
+			}
 		}
 		
 		dispatchGroup.notify(queue: .main) {

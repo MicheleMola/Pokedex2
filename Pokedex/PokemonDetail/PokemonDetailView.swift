@@ -18,10 +18,7 @@ class PokemonDetailView: UIView {
 		}
 	}
 	
-	private let pokemonDetailTableView = UITableView(
-		frame: .zero,
-		style: .grouped
-	)
+	private let pokemonDetailTableView = UITableView(frame: .zero, style: .grouped)
 		
 	override init(frame: CGRect) {
 		super.init(frame: frame)
