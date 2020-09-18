@@ -8,7 +8,7 @@
 
 import UIKit
 
-struct PokemonReference: Codable {
+struct PokemonReference: Decodable {
 	let name: String
 	let url: URL
 	
@@ -17,12 +17,12 @@ struct PokemonReference: Codable {
 	}
 }
 
-struct PokemonReferenceList: Codable {
+struct PokemonReferenceList: Decodable {
 	let count: Int
 	let results: [PokemonReference]
 }
 
-struct Pokemon: Codable, Equatable {
+struct Pokemon: Decodable, Equatable {
 	let name: String
 	let id: Int
 	let types: [TypeResponse]
@@ -43,11 +43,11 @@ struct Pokemon: Codable, Equatable {
 	}
 }
 
-struct TypeResponse: Codable {
+struct TypeResponse: Decodable {
 	let type: NameResponse
 }
 
-struct Sprites: Codable {
+struct Sprites: Decodable {
 	let frontDefault: URL
 	
 	private enum CodingKeys: String, CodingKey {
@@ -55,7 +55,7 @@ struct Sprites: Codable {
 	}
 }
 
-struct StatResponse: Codable {
+struct StatResponse: Decodable {
 	let baseStat: Int
 	let stat: NameResponse
 	
@@ -65,6 +65,6 @@ struct StatResponse: Codable {
 	}
 }
 
-struct NameResponse: Codable {
+struct NameResponse: Decodable {
 	let name: String
 }

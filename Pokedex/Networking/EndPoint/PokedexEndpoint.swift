@@ -31,7 +31,7 @@ extension PokedexAPI: Endpoint {
 				return [
 					URLQueryItem(name: "offset", value: "\(offset)"),
 					URLQueryItem(name: "limit", value: "\(limit)")
-			]
+				]
 			default: return []
 		}
 	}

@@ -23,10 +23,7 @@ class PokemonStatsTitleCell: UITableViewCell {
 		}
 	}
 	
-	override init(
-		style: UITableViewCell.CellStyle,
-		reuseIdentifier: String?
-	) {
+	override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
 		
 		self.setup()
@@ -38,11 +35,15 @@ class PokemonStatsTitleCell: UITableViewCell {
 		fatalError("init(coder:) has not been implemented")
 	}
 	
+	// MARK: - Setup
+
 	private func setup() {
 		self.contentView.addSubview(self.roundedContainer)
 		self.contentView.addSubview(self.titleLabel)
 	}
 	
+	// MARK: - Style
+
 	private func style() {
 		self.roundedContainer.layer.masksToBounds = true
 		self.roundedContainer.backgroundColor = .white
@@ -51,11 +52,16 @@ class PokemonStatsTitleCell: UITableViewCell {
 		self.titleLabel.font = UIFont.systemFont(ofSize: 22, weight: .semibold)
 	}
 	
+	// MARK: - Update
+
 	private func update() {
 		guard let viewModel = self.viewModel else { return }
+		
 		self.contentView.backgroundColor = viewModel.pokemonTypeColor
 	}
 	
+	// MARK: - Layout
+
 	private func layout() {
 		self.roundedContainer.translatesAutoresizingMaskIntoConstraints = false
 		let roundedContainerConstraints = [

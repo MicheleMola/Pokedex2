@@ -120,6 +120,7 @@ class PokedexTests: XCTestCase {
 					case .failure(let error):
 						XCTFail("Error: \(error.localizedDescription)")
 				}
-			})
+			}
+		)
 	}
 }

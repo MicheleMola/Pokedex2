@@ -25,20 +25,25 @@ class PokemonsCollectionViewFooter: UICollectionReusableView {
 		fatalError("init(coder:) has not been implemented")
 	}
 	
+	// MARK: - Setup
+
 	private func setup() {
 		self.addSubview(self.pokeBallLoader)
 		self.addSubview(self.errorLabel)
 	}
 	
+	// MARK: - Style
+
 	private func style() {
-		self.errorLabel.text = "Check your connection..."
+		self.errorLabel.text = "Connect to the internet to see them all!"
 		self.errorLabel.textColor = .gray
 		self.errorLabel.textAlignment = .center
 		self.errorLabel.font = UIFont.boldSystemFont(ofSize: 16)
-		
 		self.errorLabel.alpha = 0
 	}
 	
+	// MARK: - Layout
+
 	private func layout() {
 		self.pokeBallLoader.translatesAutoresizingMaskIntoConstraints = false
 		let pokeBallLoaderConstraints = [

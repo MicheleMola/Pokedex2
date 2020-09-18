@@ -12,9 +12,9 @@ class JSONReader {
 	let fileURL: URL
 	let jsonDecoder = JSONDecoder()
 		
-	init?(withFilename filename: String) {
+	init?(withFilename filename: String) throws {
 		guard let fileURL = Bundle.main.url(forResource: filename, withExtension: "json") else {
-			return nil
+			throw(JSONReaderError.fileNotFound)
 		}
 		
 		self.fileURL = fileURL
@@ -33,4 +33,5 @@ class JSONReader {
 
 enum JSONReaderError: String, Error {
 	case decodingFailed = "Decoding failed"
+	case fileNotFound = "File not found"
 }

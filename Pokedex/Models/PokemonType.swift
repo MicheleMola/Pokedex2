@@ -28,7 +28,7 @@ enum PokemonType: String {
 	case steel
 	case fairy
 	
-	func getColor() -> UIColor {
+	var color: UIColor {
 		switch self {
 			case .fire:
 				return PokemonColor.fireColor

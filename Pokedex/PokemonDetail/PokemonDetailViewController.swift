@@ -8,9 +8,10 @@
 import UIKit
 
 class PokemonDetailViewController: UIViewController {
+	/// Main View associated to ViewController
 	let pokemonDetailView = PokemonDetailView()
 	
-	public init(viewModel: PokemonDetailViewModel?) {
+	public init(viewModel: PokemonDetailViewModel? = nil) {
 		super.init(nibName: nil, bundle: nil)
 		
 		self.pokemonDetailView.viewModel = viewModel

@@ -23,7 +23,7 @@ struct PokemonCellViewModel {
 	}
 	
 	var primaryTypeColor: UIColor? {
-		self.pokemon.primaryType?.getColor()
+		self.pokemon.primaryType?.color
 	}
 	
 	var pokemonHasTwoTypes: Bool {
@@ -39,7 +39,11 @@ struct PokemonCellViewModel {
 	}
 	
 	var placeholderImage: UIImage? {
-		UIImage(named: "Sprites/\(self.pokemon.id)")
+		UIImage(named: "PokemonsSprites/\(self.pokemon.id)")
+	}
+	
+	var isHiddenSecondType: Bool {
+		!self.pokemonHasTwoTypes
 	}
 }
 
@@ -51,7 +55,6 @@ class PokemonCell: UICollectionViewCell {
 	private let pokemonImageView = AsyncLoadImageView()
 	private let firstTypeLabel = UILabel()
 	private let secondTypeLabel = UILabel()
-	
 	private let whitePokeballImageView = UIImageView()
 	
 	var viewModel: PokemonCellViewModel? {
@@ -59,7 +62,6 @@ class PokemonCell: UICollectionViewCell {
 			self.update()
 		}
 	}
-	
 	private var oldViewModel: PokemonCellViewModel?
 	
 	override init(frame: CGRect) {
@@ -83,16 +85,19 @@ class PokemonCell: UICollectionViewCell {
 		self.secondTypeLabel.isHidden = false
 	}
 	
+	// MARK: - Setup
+
 	private func setup() {
 		self.contentView.addSubview(self.nameLabel)
 		self.contentView.addSubview(self.idLabel)
-		
 		self.contentView.addSubview(self.whitePokeballImageView)
 		self.contentView.addSubview(self.pokemonImageView)
 		self.contentView.addSubview(self.firstTypeLabel)
 		self.contentView.addSubview(self.secondTypeLabel)
 	}
 	
+	// MARK: - Style
+
 	private func style() {
 		self.contentView.layer.masksToBounds = true
 		
@@ -101,10 +106,10 @@ class PokemonCell: UICollectionViewCell {
 		
 		self.pokemonImageView.contentMode = .scaleAspectFill
 		
-		self.nameLabel.font = UIFont.boldSystemFont(ofSize: 18)
+		self.nameLabel.font = UIFont.boldSystemFont(ofSize: 19)
 		self.nameLabel.textColor = .white
 		
-		self.idLabel.font = UIFont.boldSystemFont(ofSize: 16)
+		self.idLabel.font = UIFont.systemFont(ofSize: 16, weight: .regular)
 		self.idLabel.textColor = .black
 		
 		self.firstTypeLabel.textAlignment = .center
@@ -120,6 +125,8 @@ class PokemonCell: UICollectionViewCell {
 		self.secondTypeLabel.layer.masksToBounds = true
 	}
 	
+	// MARK: - Update
+
 	private func update() {
 		guard let viewModel = self.viewModel else {
 			return
@@ -129,31 +136,34 @@ class PokemonCell: UICollectionViewCell {
 			self.oldViewModel = viewModel
 		}
 		
+		self.contentView.backgroundColor = viewModel.primaryTypeColor
+		
 		self.nameLabel.text = viewModel.pokemonNameCapitalized
 		self.idLabel.text = viewModel.pokemonId
 		
 		self.pokemonImageView.loadImage(at: viewModel.pokemonSpriteFrontURL, withPlaceholderImage: viewModel.placeholderImage)
-		
-		self.contentView.backgroundColor = viewModel.primaryTypeColor
-		
+				
 		self.firstTypeLabel.text = viewModel.firstType
+		
 		self.secondTypeLabel.text = viewModel.secondType
-		self.secondTypeLabel.isHidden = !viewModel.pokemonHasTwoTypes
+		self.secondTypeLabel.isHidden = viewModel.isHiddenSecondType
 	}
 	
+	// MARK: - Layout
+
 	private func layout() {
 		self.idLabel.translatesAutoresizingMaskIntoConstraints = false
 		let idLabelContraints = [
-			self.idLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 16),
-			self.idLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
-			self.idLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor)
+			self.idLabel.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 16),
+			self.idLabel.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 16),
+			self.idLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor)
 		]
 		NSLayoutConstraint.activate(idLabelContraints)
 		
 		self.nameLabel.translatesAutoresizingMaskIntoConstraints = false
 		let nameLabelConstraints = [
 			self.nameLabel.topAnchor.constraint(equalTo: self.idLabel.bottomAnchor, constant: 8),
-			self.nameLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16)
+			self.nameLabel.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 16)
 		]
 		NSLayoutConstraint.activate(nameLabelConstraints)
 		
@@ -161,8 +171,8 @@ class PokemonCell: UICollectionViewCell {
 		let whitePokeballImageViewContraints = [
 			self.whitePokeballImageView.widthAnchor.constraint(equalToConstant: 88),
 			self.whitePokeballImageView.heightAnchor.constraint(equalToConstant: 88),
-			self.whitePokeballImageView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 16),
-			self.whitePokeballImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor)
+			self.whitePokeballImageView.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: 16),
+			self.whitePokeballImageView.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor)
 		]
 		NSLayoutConstraint.activate(whitePokeballImageViewContraints)
 		
@@ -170,14 +180,14 @@ class PokemonCell: UICollectionViewCell {
 		let pokemonImageViewConstraints = [
 			self.pokemonImageView.widthAnchor.constraint(equalToConstant: 80),
 			self.pokemonImageView.heightAnchor.constraint(equalToConstant: 80),
-			self.pokemonImageView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 0),
-			self.pokemonImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor)
+			self.pokemonImageView.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: 0),
+			self.pokemonImageView.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor)
 		]
 		NSLayoutConstraint.activate(pokemonImageViewConstraints)
 		
 		self.firstTypeLabel.translatesAutoresizingMaskIntoConstraints = false
 		let firstTypeLabelConstraints = [
-			self.firstTypeLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
+			self.firstTypeLabel.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 16),
 			self.firstTypeLabel.topAnchor.constraint(equalTo: self.nameLabel.bottomAnchor, constant: 8),
 			self.firstTypeLabel.heightAnchor.constraint(equalToConstant: 28),
 			self.firstTypeLabel.widthAnchor.constraint(equalToConstant: 68),

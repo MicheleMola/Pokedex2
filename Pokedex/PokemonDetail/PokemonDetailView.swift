@@ -7,36 +7,47 @@
 
 import UIKit
 
+enum StatisticTitle: String, CaseIterable {
+	case speed = "Speed"
+	case speedDefense = "Sp.Def"
+	case speedAttack = "Sp.Atk"
+	case defense = "Defense"
+	case attack = "Attack"
+	case hp = "HP"
+}
+
 struct PokemonDetailViewModel {
 	let pokemon: Pokemon
 	
-	func stat(at index: Int) -> StatResponse? {
-		self.pokemon.stats[index]
+	func statistic(at indexPath: IndexPath) -> StatResponse? {
+		let index = indexPath.row - 1
+		return self.pokemon.stats[index]
 	}
 	
 	var primaryColor: UIColor? {
-		self.pokemon.primaryType?.getColor()
+		self.pokemon.primaryType?.color
 	}
 	
-	func statTitle(at index: Int) -> String {
-		StatTitle.allCases[index].rawValue
+	func statisticTitle(at indexPath: IndexPath) -> String {
+		let index = indexPath.row - 1
+		return StatisticTitle.allCases[index].rawValue
 	}
 }
 
 class PokemonDetailView: UIView {
+	private static let headerHeight: CGFloat = 400
+	private static let cellHeight: CGFloat = 60
+	private static let numberOfCells: Int = 6
+	
+	private let pokemonDetailTableView = UITableView(frame: .zero, style: .grouped)
+	
 	var viewModel: PokemonDetailViewModel? {
 		didSet {
 			self.update()
 		}
 	}
-	
 	var oldViewModel: PokemonDetailViewModel?
-	
-	private let pokemonDetailTableView = UITableView(frame: .zero, style: .grouped)
-	
-	private static let headerHeight: CGFloat = 400
-	private static let cellHeight: CGFloat = 60
-		
+					
 	override init(frame: CGRect) {
 		super.init(frame: frame)
 		
@@ -49,6 +60,8 @@ class PokemonDetailView: UIView {
 		fatalError("init(coder:) has not been implemented")
 	}
 	
+	// MARK: - Setup
+
 	private func setup() {
 		self.pokemonDetailTableView.dataSource = self
 		self.pokemonDetailTableView.delegate = self
@@ -64,6 +77,8 @@ class PokemonDetailView: UIView {
 		self.addSubview(self.pokemonDetailTableView)
 	}
 	
+	// MARK: - Style
+
 	private func style() {
 		self.backgroundColor = .white
 		
@@ -74,17 +89,8 @@ class PokemonDetailView: UIView {
 		self.pokemonDetailTableView.contentInsetAdjustmentBehavior = .never
 	}
 	
-	private func layout() {
-		self.pokemonDetailTableView.translatesAutoresizingMaskIntoConstraints = false
-		let pokemonDetailTableViewConstraints = [
-			self.pokemonDetailTableView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-			self.pokemonDetailTableView.topAnchor.constraint(equalTo: self.topAnchor),
-			self.pokemonDetailTableView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-			self.pokemonDetailTableView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
-		]
-		NSLayoutConstraint.activate(pokemonDetailTableViewConstraints)
-	}
-	
+	// MARK: - Update
+
 	private func update() {
 		guard let viewModel = self.viewModel else { return }
 		
@@ -96,54 +102,66 @@ class PokemonDetailView: UIView {
 			self.pokemonDetailTableView.reloadData()
 		}
 	}
+	
+	// MARK: - Layout
+
+	private func layout() {
+		self.pokemonDetailTableView.translatesAutoresizingMaskIntoConstraints = false
+		let pokemonDetailTableViewConstraints = [
+			self.pokemonDetailTableView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+			self.pokemonDetailTableView.topAnchor.constraint(equalTo: self.topAnchor),
+			self.pokemonDetailTableView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+			self.pokemonDetailTableView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
+		]
+		NSLayoutConstraint.activate(pokemonDetailTableViewConstraints)
+	}
 }
+
+// MARK: - UITableViewDataSource
 
 extension PokemonDetailView: UITableViewDataSource {
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return 7
+		Self.numberOfCells
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		guard let viewModel = self.viewModel else { return UITableViewCell() }
-
-		switch indexPath.row {
-			case 0:
-				let cell = tableView.dequeueReusableCell(withIdentifier: PokemonStatsTitleCell.reusableIdentifier, for: indexPath) as! PokemonStatsTitleCell
+		
+		if indexPath.row == .zero {
+			guard let cell = tableView.dequeueReusableCell(withIdentifier: PokemonStatsTitleCell.reusableIdentifier, for: indexPath) as? PokemonStatsTitleCell else {
+				fatalError("Cell not registered")
+			}
+			
+			if let pokemonTypeColor = viewModel.primaryColor {
+				cell.viewModel = PokemonStatsTitleCellViewModel(pokemonTypeColor: pokemonTypeColor)
+			}
+			
+			return cell
+		} else {
+			guard let cell = tableView.dequeueReusableCell(withIdentifier: PokemonStatCell.reusableIdentifier, for: indexPath) as? PokemonStatCell else {
+				fatalError("Cell not registered")
+			}
+			
+			if let stat = viewModel.statistic(at: indexPath), let primaryTypeColor = viewModel.primaryColor {
+				let pokemonStatCellViewModel = PokemonStatCellViewModel(
+					title: viewModel.statisticTitle(at: indexPath),
+					stat: stat,
+					pokemonTypeColor: primaryTypeColor
+				)
 				
-				if let pokemonTypeColor = viewModel.primaryColor {
-					cell.viewModel = PokemonStatsTitleCellViewModel(pokemonTypeColor: pokemonTypeColor)
-				}
-				
-				return cell
-			case 1...6:
-				let cell = tableView.dequeueReusableCell(withIdentifier: PokemonStatCell.reusableIdentifier, for: indexPath) as! PokemonStatCell
-				
-				let index = indexPath.row - 1
-				if
-					let stat = viewModel.stat(at: index),
-					let primaryTypeColor = viewModel.primaryColor
-				{
-					let pokemonStatCellViewModel = PokemonStatCellViewModel(
-						title: viewModel.statTitle(at: index),
-						stat: stat,
-						pokemonTypeColor: primaryTypeColor
-					)
-					
-					cell.viewModel = pokemonStatCellViewModel
-				}
-				
-				return cell
-			default: return UITableViewCell()
+				cell.viewModel = pokemonStatCellViewModel
+			}
+			
+			return cell
 		}
 	}
 }
 
+// MARK: - UITableViewDelegate
+
 extension PokemonDetailView: UITableViewDelegate {
 	func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-		switch indexPath.row {
-			case 0...6: return Self.cellHeight
-			default: return 0
-		}
+		Self.cellHeight
 	}
 	
 	func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -159,13 +177,4 @@ extension PokemonDetailView: UITableViewDelegate {
 	func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
 		Self.headerHeight
 	}
-}
-
-enum StatTitle: String, CaseIterable {
-	case speed = "Speed"
-	case speedDefense = "Sp.Def"
-	case speedAttack = "Sp.Atk"
-	case defense = "Defense"
-	case attack = "Attack"
-	case hp = "HP"
 }

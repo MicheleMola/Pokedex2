@@ -23,18 +23,24 @@ class PokeBallLoader: UIView {
 		fatalError("init(coder:) has not been implemented")
 	}
 	
+	// MARK: - Setup
+
 	private func setup() {
 		self.addSubview(self.pokeBallImageView)
 		
 		self.isUserInteractionEnabled = false
 	}
 	
+	// MARK: - Style
+
 	private func style() {		
 		self.pokeBallImageView.image = UIImage(named: "pokeball")
 		self.pokeBallImageView.contentMode = .scaleAspectFit
 		self.pokeBallImageView.alpha = 0
 	}
 	
+	// MARK: - Layout
+
 	private func layout() {
 		self.pokeBallImageView.translatesAutoresizingMaskIntoConstraints = false
 		let constraints = [

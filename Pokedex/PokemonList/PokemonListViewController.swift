@@ -8,6 +8,12 @@
 import UIKit
 
 class PokemonListViewController: UIViewController {
+	/// Max number of pokemons to download from API
+	static let pokemonMax = 790
+	
+	/// Number of pokemons per page
+	static let pokemonsPerPage = 20
+	
 	/// Main View associated to ViewController
 	let pokemonListView = PokemonListView()
 	
@@ -16,21 +22,19 @@ class PokemonListViewController: UIViewController {
 	
 	/// Download status to avoid multiple calls to API
 	var isDownloading = false
-	
-	/// Max number of pokemons to download from API
-	static let pokemonMax = 790
-	
-	static let pokemonsPerPage = 20
+
+	/// Pokemons collection
 	var pokemons: [Pokemon] = []
 	
-	/// Semaphore to indicate that the first pokemon is already setted in the detail screen (iPad)
-	var isSettedFirstPokemon = false
+	/// Semaphore to indicate that the first pokemon is already setted
+	/// in the detail screen (iPad)
+	var isFirstPokemonLoaded = false
 	
 	override func loadView() {
 		self.view = self.pokemonListView
 	}
 	
-	public init(viewModel: PokemonListViewModel?) {
+	public init(viewModel: PokemonListViewModel? = nil) {
 		super.init(nibName: nil, bundle: nil)
 		
 		self.pokemonListView.viewModel = viewModel
@@ -65,12 +69,12 @@ class PokemonListViewController: UIViewController {
 	
 	private func setupInteractions() {
 		self.pokemonListView.willDisplayCellAtRow = { [unowned self] row in
+			let lastPokemonRow = self.pokemons.count - 1
 			let numberOfPokemons = self.pokemons.count
-			
 			// Check if the collection will display the last row in order to load new contents
 			// Check if there are new contents to load
-			// Check if is downloading
-			if row == numberOfPokemons - 1 && numberOfPokemons < Self.pokemonMax && !self.isDownloading {
+			// Check if is not downloading
+			if row == lastPokemonRow && numberOfPokemons < Self.pokemonMax && !self.isDownloading {
 				self.loadPokemons(fromOffset: numberOfPokemons, withLimit: Self.pokemonsPerPage)
 			}
 		}
@@ -112,13 +116,15 @@ class PokemonListViewController: UIViewController {
 		})
 	}
 	
+	/// This method load the pokemons from local file "Pokemons.json"
+	/// in order to show the first nine pokemons when the device is offline
 	private func loadLocalPokemonsIfNeeded() {
 		self.isDownloading = false
 		
-		if
-			self.pokemons.isEmpty,
-			let pokemons = try? JSONReader(withFilename: "Pokemons")?.loadModels(withType: Pokemon.self) {
-				self.pokemons.append(contentsOf: pokemons)
+		if self.pokemons.isEmpty,
+			 let pokemons = try? JSONReader(withFilename: "Pokemons")?.loadModels(withType: Pokemon.self)
+		{
+			self.pokemons.append(contentsOf: pokemons)
 			self.pokemonListView.viewModel = PokemonListViewModel(pokemons: self.pokemons, loaderState: .hide)
 			self.setFirstPokemonIfNeeded()
 		} else {
@@ -143,7 +149,6 @@ class PokemonListViewController: UIViewController {
 				switch response {
 					case .success(let pokemon):
 						guard let pokemon = pokemon else { return }
-						
 						self.pokemons.append(pokemon)
 					
 					case .failure(let error):
@@ -162,14 +167,12 @@ class PokemonListViewController: UIViewController {
 		}
 	}
 	
+	/// This method load the first pokemon if the device is iPad.
+	/// The interface immediatly show the first Pokemon in the detail screen.
 	private func setFirstPokemonIfNeeded() {
-		if
-			UIDevice.current.userInterfaceIdiom == .pad,
-			!self.isSettedFirstPokemon,
-			let firstPokemon = self.pokemons.first
-		{
+		if Device.isIpad, !self.isFirstPokemonLoaded, let firstPokemon = self.pokemons.first {
 			self.showDetail(with: firstPokemon)
-			self.isSettedFirstPokemon = true
+			self.isFirstPokemonLoaded = true
 		}
 	}
 }

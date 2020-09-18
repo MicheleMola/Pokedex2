@@ -19,7 +19,7 @@ struct PokemonDetailTableViewHeaderViewModel {
 	}
 	
 	var primaryTypeColor: UIColor? {
-		self.pokemon.primaryType?.getColor()
+		self.pokemon.primaryType?.color
 	}
 	
 	var pokemonHasTwoTypes: Bool {
@@ -39,20 +39,16 @@ struct PokemonDetailTableViewHeaderViewModel {
 	}
 	
 	var placeholderImage: UIImage? {
-		UIImage(named: "Hd/\(self.pokemon.id)")
+		UIImage(named: "PokemonsHighDefinition/\(self.pokemon.id)")
+	}
+	
+	var isHiddenSecondType: Bool {
+		!self.pokemonHasTwoTypes
 	}
 }
 
 class PokemonDetailTableViewHeader: UIView {
 	static let reusableIdentifier = "PokemonDetailTableViewHeader"
-	
-	var viewModel: PokemonDetailTableViewHeaderViewModel? {
-		didSet {
-			self.update()
-		}
-	}
-	
-	private var oldViewModel: PokemonDetailTableViewHeaderViewModel?
 	
 	private let whitePokeballImageView = UIImageView()
 	private let pokemonImageView = AsyncLoadImageView()
@@ -60,6 +56,13 @@ class PokemonDetailTableViewHeader: UIView {
 	private let idLabel = UILabel()
 	private let firstTypeLabel = UILabel()
 	private let secondTypeLabel = UILabel()
+	
+	var viewModel: PokemonDetailTableViewHeaderViewModel? {
+		didSet {
+			self.update()
+		}
+	}
+	private var oldViewModel: PokemonDetailTableViewHeaderViewModel?
 	
 	override init(frame: CGRect) {
 		super.init(frame: frame)
@@ -73,6 +76,8 @@ class PokemonDetailTableViewHeader: UIView {
 		fatalError("init(coder:) has not been implemented")
 	}
 	
+	// MARK: - Setup
+
 	private func setup() {
 		self.addSubview(self.whitePokeballImageView)
 		self.addSubview(self.pokemonImageView)
@@ -82,6 +87,8 @@ class PokemonDetailTableViewHeader: UIView {
 		self.addSubview(self.secondTypeLabel)
 	}
 	
+	// MARK: - Style
+
 	private func style() {
 		self.whitePokeballImageView.image = UIImage(named: "whitePokeball")
 		self.whitePokeballImageView.contentMode = .scaleAspectFit
@@ -90,7 +97,7 @@ class PokemonDetailTableViewHeader: UIView {
 		self.nameLabel.font = UIFont.boldSystemFont(ofSize: 26)
 		self.nameLabel.textColor = .white
 		
-		self.idLabel.font = UIFont.systemFont(ofSize: 24, weight: .semibold)
+		self.idLabel.font = UIFont.systemFont(ofSize: 24, weight: .regular)
 		self.idLabel.textColor = .black
 		
 		self.firstTypeLabel.layer.masksToBounds = true
@@ -106,6 +113,8 @@ class PokemonDetailTableViewHeader: UIView {
 		self.secondTypeLabel.textColor = .white
 	}
 	
+	// MARK: - Update
+
 	private func update() {
 		guard let viewModel = self.viewModel else {
 			return
@@ -122,16 +131,17 @@ class PokemonDetailTableViewHeader: UIView {
 		
 		self.firstTypeLabel.text = viewModel.firstType
 		self.secondTypeLabel.text = viewModel.secondType
-		self.secondTypeLabel.isHidden = !viewModel.pokemonHasTwoTypes
+		self.secondTypeLabel.isHidden = viewModel.isHiddenSecondType
 		
-		if
-			self.oldViewModel?.pokemonImageURL != viewModel.pokemonImageURL,
-			let imageURL = viewModel.pokemonImageURL
+		if self.oldViewModel?.pokemonImageURL != viewModel.pokemonImageURL,
+			 let imageURL = viewModel.pokemonImageURL
 		{
 			self.pokemonImageView.loadImage(at: imageURL, withPlaceholderImage: viewModel.placeholderImage, animated: true)
 		}
 	}
 	
+	// MARK: - Layout
+
 	private func layout() {
 		self.whitePokeballImageView.translatesAutoresizingMaskIntoConstraints = false
 		let whitePokeballImageViewConstraints = [
