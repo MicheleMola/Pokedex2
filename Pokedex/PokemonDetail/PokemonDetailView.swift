@@ -17,6 +17,10 @@ struct PokemonDetailViewModel {
 	var primaryColor: UIColor? {
 		self.pokemon.primaryType?.getColor()
 	}
+	
+	func statTitle(at index: Int) -> String {
+		StatTitle.allCases[index].rawValue
+	}
 }
 
 class PokemonDetailView: UIView {
@@ -25,6 +29,8 @@ class PokemonDetailView: UIView {
 			self.update()
 		}
 	}
+	
+	var oldViewModel: PokemonDetailViewModel?
 	
 	private let pokemonDetailTableView = UITableView(frame: .zero, style: .grouped)
 	
@@ -80,7 +86,15 @@ class PokemonDetailView: UIView {
 	}
 	
 	private func update() {
-		self.pokemonDetailTableView.reloadData()
+		guard let viewModel = self.viewModel else { return }
+		
+		defer {
+			self.oldViewModel = viewModel
+		}
+		
+		if self.oldViewModel?.pokemon != viewModel.pokemon {
+			self.pokemonDetailTableView.reloadData()
+		}
 	}
 }
 
@@ -90,11 +104,13 @@ extension PokemonDetailView: UITableViewDataSource {
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+		guard let viewModel = self.viewModel else { return UITableViewCell() }
+
 		switch indexPath.row {
 			case 0:
 				let cell = tableView.dequeueReusableCell(withIdentifier: PokemonStatsTitleCell.reusableIdentifier, for: indexPath) as! PokemonStatsTitleCell
 				
-				if let pokemonTypeColor = viewModel?.primaryColor {
+				if let pokemonTypeColor = viewModel.primaryColor {
 					cell.viewModel = PokemonStatsTitleCellViewModel(pokemonTypeColor: pokemonTypeColor)
 				}
 				
@@ -104,12 +120,13 @@ extension PokemonDetailView: UITableViewDataSource {
 				
 				let index = indexPath.row - 1
 				if
-					let stat = viewModel?.stat(at: index),
-					let primaryTypeColor = viewModel?.primaryColor
+					let stat = viewModel.stat(at: index),
+					let primaryTypeColor = viewModel.primaryColor
 				{
 					let pokemonStatCellViewModel = PokemonStatCellViewModel(
-						title: StatTitle.allCases[index].rawValue,
-						stat: stat, pokemonTypeColor: primaryTypeColor
+						title: viewModel.statTitle(at: index),
+						stat: stat,
+						pokemonTypeColor: primaryTypeColor
 					)
 					
 					cell.viewModel = pokemonStatCellViewModel

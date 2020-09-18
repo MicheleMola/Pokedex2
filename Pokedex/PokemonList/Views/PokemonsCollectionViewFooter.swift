@@ -10,7 +10,8 @@ import UIKit
 class PokemonsCollectionViewFooter: UICollectionReusableView {
 	static let reusableIdentifier = "PokemonsCollectionViewFooter"
 	
-	let pokeBallLoader = PokeBallLoader()
+	private let pokeBallLoader = PokeBallLoader()
+	private let errorLabel = UILabel()
 	
 	override init(frame: CGRect) {
 		super.init(frame: frame)
@@ -26,27 +27,50 @@ class PokemonsCollectionViewFooter: UICollectionReusableView {
 	
 	private func setup() {
 		self.addSubview(self.pokeBallLoader)
+		self.addSubview(self.errorLabel)
 	}
 	
-	private func style() {}
+	private func style() {
+		self.errorLabel.text = "Check your connection..."
+		self.errorLabel.textColor = .gray
+		self.errorLabel.textAlignment = .center
+		self.errorLabel.font = UIFont.boldSystemFont(ofSize: 16)
+		
+		self.errorLabel.alpha = 0
+	}
 	
 	private func layout() {
 		self.pokeBallLoader.translatesAutoresizingMaskIntoConstraints = false
-		
-		let constraints = [
+		let pokeBallLoaderConstraints = [
 			self.pokeBallLoader.centerXAnchor.constraint(equalTo: self.centerXAnchor),
 			self.pokeBallLoader.centerYAnchor.constraint(equalTo: self.centerYAnchor),
 			self.pokeBallLoader.widthAnchor.constraint(equalToConstant: 50),
 			self.pokeBallLoader.heightAnchor.constraint(equalToConstant: 50)
 		]
-		NSLayoutConstraint.activate(constraints)
+		NSLayoutConstraint.activate(pokeBallLoaderConstraints)
+		
+		self.errorLabel.translatesAutoresizingMaskIntoConstraints = false
+		let errorLabelContraints = [
+			self.errorLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+			self.errorLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+			self.errorLabel.widthAnchor.constraint(equalTo: self.widthAnchor),
+			self.errorLabel.heightAnchor.constraint(equalToConstant: 50)
+		]
+		NSLayoutConstraint.activate(errorLabelContraints)
 	}
 	
 	func showLoader() {
+		self.errorLabel.alpha = 0
 		self.pokeBallLoader.show()
 	}
 	
 	func hideLoader() {
+		self.errorLabel.alpha = 0
 		self.pokeBallLoader.dismiss()
+	}
+	
+	func hideLoaderWithError() {
+		self.pokeBallLoader.dismiss()
+		self.errorLabel.alpha = 1
 	}
 }

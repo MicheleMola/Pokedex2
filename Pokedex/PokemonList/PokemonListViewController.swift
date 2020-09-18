@@ -23,7 +23,7 @@ class PokemonListViewController: UIViewController {
 	static let pokemonsPerPage = 20
 	var pokemons: [Pokemon] = []
 	
-	/// Semaphore to indicate that the first pokemon is already setted in the detail screen
+	/// Semaphore to indicate that the first pokemon is already setted in the detail screen (iPad)
 	var isSettedFirstPokemon = false
 	
 	override func loadView() {
@@ -58,7 +58,6 @@ class PokemonListViewController: UIViewController {
 	}
 	
 	private func setupInteractions() {
-		
 		self.pokemonListView.willDisplayCellAtRow = { [unowned self] row in
 			let numberOfPokemons = self.pokemons.count
 			
@@ -66,11 +65,7 @@ class PokemonListViewController: UIViewController {
 			// Check if there are new contents to load
 			// Check if is downloading
 			if row == numberOfPokemons - 1 && numberOfPokemons < Self.pokemonMax && !self.isDownloading {
-				
-				self.loadPokemons(
-					fromOffset: numberOfPokemons,
-					withLimit: Self.pokemonsPerPage
-				)
+				self.loadPokemons(fromOffset: numberOfPokemons, withLimit: Self.pokemonsPerPage)
 			}
 		}
 		
@@ -89,7 +84,8 @@ class PokemonListViewController: UIViewController {
 	
 	/// Load paginated pokemons references from API Client
 	private func loadPokemons(fromOffset offset: Int, withLimit limit: Int) {
-		self.setDownloadingStatus(to: true)
+		self.isDownloading = true
+		self.pokemonListView.viewModel = PokemonListViewModel(pokemons: self.pokemons, loaderState: .show)
 		
 		self.pokedexAPIClient.getPokemonList(
 			withOffset: offset,
@@ -103,19 +99,34 @@ class PokemonListViewController: UIViewController {
 						
 						self.getPokemonsDetail(from: response.results)
 					
-					case .failure:
-						self.setDownloadingStatus(to: false)
-						
-						self.showAlert(withTitle: "Warning", andMessage: "Oops, something went wrong. Please try again later.")
+					case .failure(let error):
+						print("Error: ", error)
+						self.loadLocalPokemonsIfNeeded()
 				}
 		})
+	}
+	
+	private func loadLocalPokemonsIfNeeded() {
+		self.isDownloading = false
+		
+		if
+			self.pokemons.isEmpty,
+			let pokemons = try? JSONReader(withFilename: "Pokemons")?.loadModels(withType: Pokemon.self) {
+				self.pokemons.append(contentsOf: pokemons)
+			self.pokemonListView.viewModel = PokemonListViewModel(pokemons: self.pokemons, loaderState: .hide)
+			self.setFirstPokemonIfNeeded()
+		} else {
+			self.pokemonListView.viewModel = PokemonListViewModel(pokemons: self.pokemons, loaderState: .hideWithError)
+		}
 	}
 	
 	/// Get more details(types, sprites, ecc...) from pokemonReference collections
 	private func getPokemonsDetail(from pokemonsReference: [PokemonReference]) {
 		let dispatchGroup = DispatchGroup()
 		
-		pokemonsReference.forEach { pokemonReference in
+		pokemonsReference.forEach { [weak self] pokemonReference in
+			guard let self = self else { return }
+			
 			dispatchGroup.enter()
 			
 			self.pokedexAPIClient.getPokemon(byId: pokemonReference.id) { [weak self] response in
@@ -124,10 +135,10 @@ class PokemonListViewController: UIViewController {
 				guard let self = self else { return }
 				
 				switch response {
-					case .success(let response):
-						guard let response = response else { return }
+					case .success(let pokemon):
+						guard let pokemon = pokemon else { return }
 						
-						self.pokemons.append(response)
+						self.pokemons.append(pokemon)
 					
 					case .failure(let error):
 						print(error)
@@ -135,16 +146,17 @@ class PokemonListViewController: UIViewController {
 			}
 		}
 		
-		dispatchGroup.notify(queue: .main) {
-			self.pokemons.sort(by: { $0.id < $1.id })
-			self.pokemonListView.viewModel = PokemonListViewModel(pokemons: self.pokemons)
-			self.setDownloadingStatus(to: false)
+		dispatchGroup.notify(queue: .main) { [weak self] in
+			guard let self = self else { return }
+			self.pokemons.sort { $0.id < $1.id }
+			self.pokemonListView.viewModel = PokemonListViewModel(pokemons: self.pokemons, loaderState: .hide)
+			self.isDownloading = false
 			
-			self.setFirstPokemon()
+			self.setFirstPokemonIfNeeded()
 		}
 	}
 	
-	private func setFirstPokemon() {
+	private func setFirstPokemonIfNeeded() {
 		if
 			UIDevice.current.userInterfaceIdiom == .pad,
 			!self.isSettedFirstPokemon,
@@ -153,11 +165,5 @@ class PokemonListViewController: UIViewController {
 			self.showDetail(with: firstPokemon)
 			self.isSettedFirstPokemon = true
 		}
-	}
-	
-	private func setDownloadingStatus(to value: Bool) {
-		self.isDownloading = value
-		
-		self.pokemonListView.isDownloading = value
 	}
 }

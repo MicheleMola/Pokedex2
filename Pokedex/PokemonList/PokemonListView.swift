@@ -7,8 +7,15 @@
 
 import UIKit
 
+enum LoaderState: Int {
+	case show
+	case hide
+	case hideWithError
+}
+
 struct PokemonListViewModel {
 	let pokemons: [Pokemon]
+	let loaderState: LoaderState
 }
 
 class PokemonListView: UIView {
@@ -19,15 +26,7 @@ class PokemonListView: UIView {
 		}
 	}
 	
-	var isDownloading = false {
-		didSet {
-			if isDownloading {
-				self.pokeBallLoader.show()
-			} else {
-				self.pokeBallLoader.dismiss()
-			}
-		}
-	}
+	private var oldViewModel: PokemonListViewModel?
 	
 	// MARK: - Private properties
 	private var pokemonsCollectionView: UICollectionView!
@@ -41,8 +40,7 @@ class PokemonListView: UIView {
 	private static let minimumLineSpacingForSection: CGFloat = 16
 	private static let cellHeight: CGFloat = 120
 	
-	private let pokeBallLoader = PokeBallLoader()
-	private let pokemonsCollectionViewFooterReusableIdentifier = "PokemonsCollectionViewFooterReusableIdentifier"
+	private var footerView = PokemonsCollectionViewFooter()
 
 	// MARK: - Interactions
 	var willDisplayCellAtRow: ((Int) -> ())?
@@ -59,10 +57,6 @@ class PokemonListView: UIView {
 		fatalError("init(coder:) has not been implemented")
 	}
 	
-	private func update() {
-		self.pokemonsCollectionView.reloadData()
-	}
-	
 	private func setup() {
 		self.pokemonsCollectionViewFlowLayout = UICollectionViewFlowLayout()
 		self.pokemonsCollectionView = UICollectionView(frame: .zero, collectionViewLayout: self.pokemonsCollectionViewFlowLayout)
@@ -71,7 +65,11 @@ class PokemonListView: UIView {
 		self.pokemonsCollectionView.delegate = self
 		
 		self.pokemonsCollectionView.register(PokemonCell.self, forCellWithReuseIdentifier: PokemonCell.reusableIdentifier)
-		self.pokemonsCollectionView.register(UICollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: self.pokemonsCollectionViewFooterReusableIdentifier)
+		self.pokemonsCollectionView.register(
+			PokemonsCollectionViewFooter.self,
+			forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
+			withReuseIdentifier: PokemonsCollectionViewFooter.reusableIdentifier
+		)
 		
 		self.addSubview(self.pokemonsCollectionView)
 	}
@@ -80,16 +78,34 @@ class PokemonListView: UIView {
 		self.pokemonsCollectionView.backgroundColor = .white
 	}
 	
+	private func update() {
+		guard let viewModel = self.viewModel else { return }
+		
+		defer {
+			self.oldViewModel = viewModel
+		}
+		
+		if self.oldViewModel?.pokemons != viewModel.pokemons {
+			self.pokemonsCollectionView.reloadData()
+		}
+		
+		if self.oldViewModel?.loaderState != viewModel.loaderState {
+			switch viewModel.loaderState {
+			case .show: self.footerView.showLoader()
+			case .hide: self.footerView.hideLoader()
+			case .hideWithError: self.footerView.hideLoaderWithError()
+			}
+		}
+	}
+	
 	private func layout() {
 		self.pokemonsCollectionView.translatesAutoresizingMaskIntoConstraints = false
-
 		let pokemonsCollectionViewConstraints = [
 			self.pokemonsCollectionView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
 			self.pokemonsCollectionView.topAnchor.constraint(equalTo: self.topAnchor),
 			self.pokemonsCollectionView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
 			self.pokemonsCollectionView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
 		]
-		
 		NSLayoutConstraint.activate(pokemonsCollectionViewConstraints)
 	}
 	
@@ -106,7 +122,7 @@ extension PokemonListView: UICollectionViewDataSource {
 		_ collectionView: UICollectionView,
 		numberOfItemsInSection section: Int
 	) -> Int {
-		return viewModel?.pokemons.count ?? 0
+		self.viewModel?.pokemons.count ?? 0
 	}
 	
 	func collectionView(
@@ -129,20 +145,12 @@ extension PokemonListView: UICollectionViewDataSource {
 	) -> UICollectionReusableView {
 		switch kind {
 		case UICollectionView.elementKindSectionFooter:
-			let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: self.pokemonsCollectionViewFooterReusableIdentifier, for: indexPath)
+			self.footerView = collectionView.dequeueReusableSupplementaryView(
+				ofKind: kind,
+				withReuseIdentifier: PokemonsCollectionViewFooter.reusableIdentifier,
+				for: indexPath
+			) as! PokemonsCollectionViewFooter
 
-			footerView.addSubview(self.pokeBallLoader)
-						
-			self.pokeBallLoader.translatesAutoresizingMaskIntoConstraints = false
-			
-			let constraints = [
-				self.pokeBallLoader.centerXAnchor.constraint(equalTo: footerView.centerXAnchor),
-				self.pokeBallLoader.centerYAnchor.constraint(equalTo: footerView.centerYAnchor),
-				self.pokeBallLoader.widthAnchor.constraint(equalToConstant: 50),
-				self.pokeBallLoader.heightAnchor.constraint(equalToConstant: 50)
-			]
-			NSLayoutConstraint.activate(constraints)
-			
 			return footerView
 		default:
 			return UICollectionReusableView()
@@ -154,7 +162,7 @@ extension PokemonListView: UICollectionViewDataSource {
 		layout collectionViewLayout: UICollectionViewLayout,
 		referenceSizeForFooterInSection section: Int
 	) -> CGSize {
-		return CGSize(width: self.pokemonsCollectionView.bounds.width, height: 60)
+		CGSize(width: self.pokemonsCollectionView.bounds.width, height: 60)
 	}
 }
 
@@ -168,10 +176,8 @@ extension PokemonListView: UICollectionViewDelegate {
 		self.willDisplayCellAtRow?(indexPath.row)
 	}
 	
-	func collectionView(
-		_ collectionView: UICollectionView,
-		didSelectItemAt indexPath: IndexPath
-	) {
+	
+	func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 		self.didSelectPokemonAtRow?(indexPath.row)
 	}
 }
@@ -199,22 +205,6 @@ extension PokemonListView: UICollectionViewDelegateFlowLayout {
 		insetForSectionAt section: Int
 	) -> UIEdgeInsets {
 		self.pokemonListCollectionViewInsetsForSection
-	}
-	
-	func collectionView(
-		_ collectionView: UICollectionView,
-		layout collectionViewLayout: UICollectionViewLayout,
-		minimumLineSpacingForSectionAt section: Int
-	) -> CGFloat {
-		Self.minimumLineSpacingForSection
-	}
-	
-	func collectionView(
-		_ collectionView: UICollectionView,
-		layout collectionViewLayout: UICollectionViewLayout,
-		minimumInteritemSpacingForSectionAt section: Int
-	) -> CGFloat {
-		Self.minimumInteritemSpacingForSection
 	}
 }
 

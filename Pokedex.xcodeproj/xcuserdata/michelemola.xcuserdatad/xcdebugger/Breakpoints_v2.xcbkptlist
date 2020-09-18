@@ -7,79 +7,32 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "9E94341D-163D-4AD6-A38D-E1AA20310015"
-            shouldBeEnabled = "Yes"
+            uuid = "3D7374CD-EC02-472D-B07D-AF3A9F6CCD69"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Pokedex/Utilities/ImageLoader.swift"
+            filePath = "Pokedex/PokemonList/PokemonListViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "27"
-            endingLineNumber = "27"
-            landmarkName = "loadImage(_:_:)"
+            startingLineNumber = "116"
+            endingLineNumber = "116"
+            landmarkName = "loadLocalPokemonsIfNeeded()"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "9E94341D-163D-4AD6-A38D-E1AA20310015 - 34e8d850583b68f2"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (Swift.Optional&lt;Foundation.Data&gt;, Swift.Optional&lt;__C.NSURLResponse&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in Pokedex.ImageLoader.loadImage(Foundation.URL, (Swift.Result&lt;__C.UIImage, Swift.Error&gt;) -&gt; ()) -&gt; Swift.Optional&lt;Foundation.UUID&gt;"
-                  moduleName = "Pokedex"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/michelemola/Desktop/MyProjects/Pokedex2/Pokedex/Utilities/ImageLoader.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "27"
-                  endingLineNumber = "27"
-                  offsetFromSymbolStart = "848">
-               </Location>
-               <Location
-                  uuid = "9E94341D-163D-4AD6-A38D-E1AA20310015 - 34e8d850583b68f2"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (Swift.Optional&lt;Foundation.Data&gt;, Swift.Optional&lt;__C.NSURLResponse&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in Pokedex.ImageLoader.loadImage(Foundation.URL, (Swift.Result&lt;__C.UIImage, Swift.Error&gt;) -&gt; ()) -&gt; Swift.Optional&lt;Foundation.UUID&gt;"
-                  moduleName = "Pokedex"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/michelemola/Desktop/MyProjects/Pokedex2/Pokedex/Utilities/ImageLoader.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "27"
-                  endingLineNumber = "27"
-                  offsetFromSymbolStart = "896">
-               </Location>
-               <Location
-                  uuid = "9E94341D-163D-4AD6-A38D-E1AA20310015 - e68e02114e77c9a9"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "$defer #1 () -&gt; () in closure #1 (Swift.Optional&lt;Foundation.Data&gt;, Swift.Optional&lt;__C.NSURLResponse&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in Pokedex.ImageLoader.loadImage(Foundation.URL, (Swift.Result&lt;__C.UIImage, Swift.Error&gt;) -&gt; ()) -&gt; Swift.Optional&lt;Foundation.UUID&gt;"
-                  moduleName = "Pokedex"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/michelemola/Desktop/MyProjects/Pokedex2/Pokedex/Utilities/ImageLoader.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "27"
-                  endingLineNumber = "27"
-                  offsetFromSymbolStart = "104">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "EC67EBFB-C62D-420D-8A45-67C89BA571F9"
-            shouldBeEnabled = "Yes"
+            uuid = "F8EB892D-A957-4F14-83C4-94CD92665B74"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Pokedex/Utilities/ImageLoader.swift"
+            filePath = "Pokedex/AppDelegate.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "30"
-            endingLineNumber = "30"
-            landmarkName = "loadImage(_:_:)"
+            startingLineNumber = "37"
+            endingLineNumber = "37"
+            landmarkName = "applicationDidReceiveMemoryWarning(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

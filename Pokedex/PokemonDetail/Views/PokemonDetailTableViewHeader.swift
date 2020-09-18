@@ -37,6 +37,10 @@ struct PokemonDetailTableViewHeaderViewModel {
 	var pokemonImageURL: URL? {
 		self.pokemon.imageURL
 	}
+	
+	var placeholderImage: UIImage? {
+		UIImage(named: "Hd/\(self.pokemon.id)")
+	}
 }
 
 class PokemonDetailTableViewHeader: UIView {
@@ -48,8 +52,10 @@ class PokemonDetailTableViewHeader: UIView {
 		}
 	}
 	
+	private var oldViewModel: PokemonDetailTableViewHeaderViewModel?
+	
 	private let whitePokeballImageView = UIImageView()
-	private let pokemonImageView = UIImageView()
+	private let pokemonImageView = AsyncLoadImageView()
 	private let nameLabel = UILabel()
 	private let idLabel = UILabel()
 	private let firstTypeLabel = UILabel()
@@ -79,7 +85,7 @@ class PokemonDetailTableViewHeader: UIView {
 	private func style() {
 		self.whitePokeballImageView.image = UIImage(named: "whitePokeball")
 		self.whitePokeballImageView.contentMode = .scaleAspectFit
-		self.whitePokeballImageView.alpha = 0.5
+		self.whitePokeballImageView.alpha = 0.4
 		
 		self.nameLabel.font = UIFont.boldSystemFont(ofSize: 26)
 		self.nameLabel.textColor = .white
@@ -98,6 +104,32 @@ class PokemonDetailTableViewHeader: UIView {
 		self.secondTypeLabel.textAlignment = .center
 		self.secondTypeLabel.font = UIFont.systemFont(ofSize: 18, weight: .medium)
 		self.secondTypeLabel.textColor = .white
+	}
+	
+	private func update() {
+		guard let viewModel = self.viewModel else {
+			return
+		}
+		
+		defer {
+			self.oldViewModel = viewModel
+		}
+		
+		self.backgroundColor = viewModel.primaryTypeColor
+		
+		self.nameLabel.text = viewModel.pokemonNameCapitalized
+		self.idLabel.text = viewModel.pokemonId
+		
+		self.firstTypeLabel.text = viewModel.firstType
+		self.secondTypeLabel.text = viewModel.secondType
+		self.secondTypeLabel.isHidden = !viewModel.pokemonHasTwoTypes
+		
+		if
+			self.oldViewModel?.pokemonImageURL != viewModel.pokemonImageURL,
+			let imageURL = viewModel.pokemonImageURL
+		{
+			self.pokemonImageView.loadImage(at: imageURL, withPlaceholderImage: viewModel.placeholderImage, animated: true)
+		}
 	}
 	
 	private func layout() {
@@ -153,25 +185,6 @@ class PokemonDetailTableViewHeader: UIView {
 		NSLayoutConstraint.activate(secondTypeLabelConstraints)
 		
 		self.layoutIfNeeded()
-	}
-	
-	private func update() {
-		guard let viewModel = self.viewModel else {
-			return
-		}
-		
-		self.backgroundColor = viewModel.primaryTypeColor
-		
-		self.nameLabel.text = viewModel.pokemonNameCapitalized
-		self.idLabel.text = viewModel.pokemonId
-		
-		self.firstTypeLabel.text = viewModel.firstType
-		self.secondTypeLabel.text = viewModel.secondType
-		self.secondTypeLabel.isHidden = !viewModel.pokemonHasTwoTypes
-		
-		if let imageURL = viewModel.pokemonImageURL {
-			self.pokemonImageView.loadImage(at: imageURL)
-		}
 	}
 	
 	override func layoutSubviews() {

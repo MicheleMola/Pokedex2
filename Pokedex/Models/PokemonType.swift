@@ -31,41 +31,41 @@ enum PokemonType: String {
 	func getColor() -> UIColor {
 		switch self {
 			case .fire:
-				return fireColor
+				return PokemonColor.fireColor
 			case .flying:
-				return flyingColor
+				return PokemonColor.flyingColor
 			case .normal:
-				return normalColor
+				return PokemonColor.normalColor
 			case .water:
-				return waterColor
+				return PokemonColor.waterColor
 			case .grass:
-				return grassColor
+				return PokemonColor.grassColor
 			case .electric:
-				return electricColor
+				return PokemonColor.electricColor
 			case .ice:
-				return iceColor
+				return PokemonColor.iceColor
 			case .fighting:
-				return fightingColor
+				return PokemonColor.fightingColor
 			case .poison:
-				return poisonColor
+				return PokemonColor.poisonColor
 			case .ground:
-				return groundColor
+				return PokemonColor.groundColor
 			case .psychic:
-				return psychicColor
+				return PokemonColor.psychicColor
 			case .bug:
-				return bugColor
+				return PokemonColor.bugColor
 			case .rock:
-				return rockColor
+				return PokemonColor.rockColor
 			case .ghost:
-				return ghostColor
+				return PokemonColor.ghostColor
 			case .dark:
-				return darkColor
+				return PokemonColor.darkColor
 			case .dragon:
-				return dragonColor
+				return PokemonColor.dragonColor
 			case .steel:
-				return steelColor
+				return PokemonColor.steelColor
 			case .fairy:
-				return fairyColor
+				return PokemonColor.fairyColor
 		}
 	}
 }

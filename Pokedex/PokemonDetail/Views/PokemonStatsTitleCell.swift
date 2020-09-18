@@ -51,6 +51,11 @@ class PokemonStatsTitleCell: UITableViewCell {
 		self.titleLabel.font = UIFont.systemFont(ofSize: 22, weight: .semibold)
 	}
 	
+	private func update() {
+		guard let viewModel = self.viewModel else { return }
+		self.contentView.backgroundColor = viewModel.pokemonTypeColor
+	}
+	
 	private func layout() {
 		self.roundedContainer.translatesAutoresizingMaskIntoConstraints = false
 		let roundedContainerConstraints = [
@@ -72,15 +77,10 @@ class PokemonStatsTitleCell: UITableViewCell {
 		self.layoutIfNeeded()
 	}
 	
-	private func update() {
-		guard let viewModel = self.viewModel else { return }
-		self.contentView.backgroundColor = viewModel.pokemonTypeColor
-	}
-	
 	override func layoutSubviews() {
 		super.layoutSubviews()
 		
-		self.roundedContainer.roundCorners(corners: [.topLeft, .topRight], radius: self.roundedContainer.bounds.height / 3)
+		self.roundedContainer.roundCorners(corners: [.topLeft, .topRight], radius: 10)
 	}
 }
 
