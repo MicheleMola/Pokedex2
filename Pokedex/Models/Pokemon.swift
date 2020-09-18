@@ -30,11 +30,11 @@ struct Pokemon: Codable, Equatable {
 	let stats: [StatResponse]
 	
 	var imageURL: URL? {
-		URL(string: "https://pokeres.bastionbot.org/images/pokemon/\(id).png")
+		URL(string: "https://pokeres.bastionbot.org/images/pokemon/\(self.id).png")
 	}
 	
 	var primaryType: PokemonType? {
-		guard let type = types.first?.type.name else { return nil }
+		guard let type = self.types.first?.type.name else { return nil }
 		return PokemonType(rawValue: type)
 	}
 	

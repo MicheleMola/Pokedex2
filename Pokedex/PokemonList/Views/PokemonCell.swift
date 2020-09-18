@@ -18,7 +18,7 @@ struct PokemonCellViewModel {
 		"#\(self.pokemon.id)"
 	}
 	
-	var pokemonSpriteFront: URL {
+	var pokemonSpriteFrontURL: URL {
 		self.pokemon.sprites.frontDefault
 	}
 	
@@ -37,6 +37,10 @@ struct PokemonCellViewModel {
 	var secondType: String? {
 		self.pokemon.types.last?.type.name.capitalized
 	}
+	
+	var placeholderImage: UIImage? {
+		UIImage(named: "Sprites/\(self.pokemon.id)")
+	}
 }
 
 class PokemonCell: UICollectionViewCell {
@@ -44,7 +48,7 @@ class PokemonCell: UICollectionViewCell {
 	
 	private let nameLabel = UILabel()
 	private let idLabel = UILabel()
-	private let pokemonImageView = UIImageView()
+	private let pokemonImageView = AsyncLoadImageView()
 	private let firstTypeLabel = UILabel()
 	private let secondTypeLabel = UILabel()
 	
@@ -55,6 +59,8 @@ class PokemonCell: UICollectionViewCell {
 			self.update()
 		}
 	}
+	
+	private var oldViewModel: PokemonCellViewModel?
 	
 	override init(frame: CGRect) {
 		super.init(frame: frame)
@@ -71,9 +77,9 @@ class PokemonCell: UICollectionViewCell {
 	override func prepareForReuse() {
 		super.prepareForReuse()
 		
+		self.pokemonImageView.cancelLoad()
 		self.pokemonImageView.image = nil
-		self.pokemonImageView.cancelImageLoad()
-		
+
 		self.secondTypeLabel.isHidden = false
 	}
 	
@@ -119,10 +125,14 @@ class PokemonCell: UICollectionViewCell {
 			return
 		}
 		
+		defer {
+			self.oldViewModel = viewModel
+		}
+		
 		self.nameLabel.text = viewModel.pokemonNameCapitalized
 		self.idLabel.text = viewModel.pokemonId
 		
-		self.pokemonImageView.loadImage(at: viewModel.pokemonSpriteFront)
+		self.pokemonImageView.loadImage(at: viewModel.pokemonSpriteFrontURL, withPlaceholderImage: viewModel.placeholderImage)
 		
 		self.contentView.backgroundColor = viewModel.primaryTypeColor
 		
@@ -191,7 +201,6 @@ class PokemonCell: UICollectionViewCell {
 		
 		self.firstTypeLabel.layer.cornerRadius = self.firstTypeLabel.bounds.height / 2
 		self.secondTypeLabel.layer.cornerRadius = self.secondTypeLabel.bounds.height / 2
-		
 		self.contentView.layer.cornerRadius = self.contentView.bounds.height / 10		
 	}
 }

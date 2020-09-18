@@ -30,8 +30,10 @@ extension APIClient {
 				switch error.code {
 					case .networkConnectionLost:
 						completion(nil, .connectionLost)
+						return
 					case .notConnectedToInternet:
 						completion(nil, .notConnectToInternet)
+						return
 					default:
 						completion(nil, .requestFailed)
 						return
@@ -66,9 +68,7 @@ extension APIClient {
 		decode: @escaping (Decodable) -> T?,
 		completion: @escaping (Result<T, APIError>) -> Void
 	) {
-		
 		let task = decodingTask(with: request, decodingType: T.self) { json, error in
-			
 			DispatchQueue.main.async {
 				guard let json = json else {
 					if let error = error {
