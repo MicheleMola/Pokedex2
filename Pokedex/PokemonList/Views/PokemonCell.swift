@@ -142,7 +142,7 @@ class PokemonCell: UICollectionViewCell {
 		self.idLabel.text = viewModel.pokemonId
 		
 		self.pokemonImageView.loadImage(at: viewModel.pokemonSpriteFrontURL, withPlaceholderImage: viewModel.placeholderImage)
-				
+		
 		self.firstTypeLabel.text = viewModel.firstType
 		
 		self.secondTypeLabel.text = viewModel.secondType

@@ -57,11 +57,11 @@ struct Sprites: Decodable {
 
 struct StatResponse: Decodable {
 	let baseStat: Int
-	let stat: NameResponse
+	let statistic: NameResponse
 	
 	private enum CodingKeys: String, CodingKey {
 		case baseStat = "base_stat"
-		case stat
+		case statistic = "stat"
 	}
 }
 

@@ -21,16 +21,40 @@ struct PokemonDetailViewModel {
 	
 	func statistic(at indexPath: IndexPath) -> StatResponse? {
 		let index = indexPath.row - 1
-		return self.pokemon.stats[index]
+		return self.pokemon.stats[safeIndex: index]
 	}
 	
 	var primaryColor: UIColor? {
 		self.pokemon.primaryType?.color
 	}
 	
-	func statisticTitle(at indexPath: IndexPath) -> String {
+	func statisticTitle(at indexPath: IndexPath) -> String? {
 		let index = indexPath.row - 1
-		return StatisticTitle.allCases[index].rawValue
+		return StatisticTitle.allCases[safeIndex: index]?.rawValue
+	}
+	
+	var pokemonStatsTitleCellViewModel: PokemonStatsTitleCellViewModel? {
+		guard let primaryColor = self.primaryColor else { return nil }
+		return PokemonStatsTitleCellViewModel(pokemonTypeColor: primaryColor)
+	}
+	
+	func pokemonStatCellViewModel(at indexPath: IndexPath) -> PokemonStatCellViewModel? {
+		guard let statistic = self.statistic(at: indexPath),
+					let statisticTitle = self.statisticTitle(at: indexPath),
+					let primaryColor = self.primaryColor
+		else { return nil }
+		
+		let pokemonStatCellViewModel = PokemonStatCellViewModel(
+			title: statisticTitle,
+			statistic: statistic,
+			pokemonTypeColor: primaryColor
+		)
+		
+		return pokemonStatCellViewModel
+	}
+	
+	var headerViewModel: PokemonDetailTableViewHeaderViewModel {
+		PokemonDetailTableViewHeaderViewModel(pokemon: self.pokemon)
 	}
 }
 
@@ -125,33 +149,21 @@ extension PokemonDetailView: UITableViewDataSource {
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		guard let viewModel = self.viewModel else { return UITableViewCell() }
-		
 		if indexPath.row == .zero {
 			guard let cell = tableView.dequeueReusableCell(withIdentifier: PokemonStatsTitleCell.reusableIdentifier, for: indexPath) as? PokemonStatsTitleCell else {
-				fatalError("Cell not registered")
+				fatalError("Cell: \(PokemonStatsTitleCell.reusableIdentifier) not registered")
 			}
 			
-			if let pokemonTypeColor = viewModel.primaryColor {
-				cell.viewModel = PokemonStatsTitleCellViewModel(pokemonTypeColor: pokemonTypeColor)
-			}
+			cell.viewModel = viewModel?.pokemonStatsTitleCellViewModel
 			
 			return cell
 		} else {
 			guard let cell = tableView.dequeueReusableCell(withIdentifier: PokemonStatCell.reusableIdentifier, for: indexPath) as? PokemonStatCell else {
-				fatalError("Cell not registered")
+				fatalError("Cell: \(PokemonStatCell.reusableIdentifier) not registered")
 			}
 			
-			if let stat = viewModel.statistic(at: indexPath), let primaryTypeColor = viewModel.primaryColor {
-				let pokemonStatCellViewModel = PokemonStatCellViewModel(
-					title: viewModel.statisticTitle(at: indexPath),
-					stat: stat,
-					pokemonTypeColor: primaryTypeColor
-				)
-				
-				cell.viewModel = pokemonStatCellViewModel
-			}
-			
+			cell.viewModel = self.viewModel?.pokemonStatCellViewModel(at: indexPath)
+
 			return cell
 		}
 	}
@@ -167,9 +179,7 @@ extension PokemonDetailView: UITableViewDelegate {
 	func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
 		let headerView = PokemonDetailTableViewHeader()
 		
-		if let pokemon = viewModel?.pokemon {
-			headerView.viewModel = PokemonDetailTableViewHeaderViewModel(pokemon: pokemon)
-		}
+		headerView.viewModel = self.viewModel?.headerViewModel
 		
 		return headerView
 	}

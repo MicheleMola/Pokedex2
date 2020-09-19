@@ -7,11 +7,21 @@
 
 import UIKit
 
+struct PokemonsCollectionViewFooterViewModel {
+	let loaderState: LoaderState
+}
+
 class PokemonsCollectionViewFooter: UICollectionReusableView {
 	static let reusableIdentifier = "PokemonsCollectionViewFooter"
 	
 	private let pokeBallLoader = PokeBallLoader()
 	private let errorLabel = UILabel()
+	
+	var viewModel: PokemonsCollectionViewFooterViewModel? {
+		didSet {
+			self.update()
+		}
+	}
 	
 	override init(frame: CGRect) {
 		super.init(frame: frame)
@@ -40,6 +50,18 @@ class PokemonsCollectionViewFooter: UICollectionReusableView {
 		self.errorLabel.textAlignment = .center
 		self.errorLabel.font = UIFont.boldSystemFont(ofSize: 16)
 		self.errorLabel.alpha = 0
+	}
+	
+	// MARK: - Update
+	
+	private func update() {
+		guard let viewModel = self.viewModel else { return }
+		
+		switch viewModel.loaderState {
+			case .show: self.showLoader()
+			case .hide: self.hideLoader()
+			case .hideWithError: self.hideLoaderWithError()
+		}
 	}
 	
 	// MARK: - Layout

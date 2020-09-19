@@ -13,7 +13,7 @@ fileprivate let cache = NSCache<NSURL, UIImage>()
 class AsyncLoadImageView: UIImageView {
 	private var runningTask: URLSessionDataTask?
 		
-	func loadImage(at url: URL, withPlaceholderImage placeholderImage: UIImage? = nil, animated: Bool = false) {
+	func loadImage(at url: URL, withPlaceholderImage placeholderImage: UIImage? = nil, animated: Bool = false) {		
 		if let placeholderImage = placeholderImage {
 			self.setImage(placeholderImage, animated: false)
 		}

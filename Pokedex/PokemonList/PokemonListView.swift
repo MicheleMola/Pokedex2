@@ -20,14 +20,33 @@ enum LoaderState: Int {
 struct PokemonListViewModel {
 	let pokemons: [Pokemon]
 	let loaderState: LoaderState
+	
+	var footerViewModel: PokemonsCollectionViewFooterViewModel {
+		PokemonsCollectionViewFooterViewModel(loaderState: self.loaderState)
+	}
+	
+	func pokemonCellViewModel(at indexPath: IndexPath) -> PokemonCellViewModel? {
+		guard let pokemon = self.pokemons[safeIndex: indexPath.row] else { return nil }
+		return PokemonCellViewModel(pokemon: pokemon)
+	}
+	
+	func pokemon(at indexPath: IndexPath) -> Pokemon? {
+		self.pokemons[safeIndex: indexPath.row]
+	}
+	
+	var numberOfPokemons: Int {
+		self.pokemons.count
+	}
 }
 
 class PokemonListView: UIView {
 	private static let cellHeight: CGFloat = 120
 	private static let sectionInset = UIEdgeInsets(top: 16, left: 16, bottom: 0, right: 16)
 	
-	private var pokemonsCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-	private var footerView = PokemonsCollectionViewFooter()
+	private var pokemonsCollectionView = UICollectionView(
+		frame: .zero,
+		collectionViewLayout: UICollectionViewFlowLayout()
+	)
 	
 	var viewModel: PokemonListViewModel? {
 		didSet {
@@ -37,7 +56,7 @@ class PokemonListView: UIView {
 	private var oldViewModel: PokemonListViewModel?
 
 	var willDisplayCellAtRow: ((Int) -> ())?
-	var didSelectPokemonAtRow: ((Int) -> ())?
+	var didSelectPokemon: ((Pokemon) -> ())?
 	
 	override init(frame: CGRect) {
 		super.init(frame: frame)
@@ -83,15 +102,8 @@ class PokemonListView: UIView {
 		}
 		
 		if self.oldViewModel?.pokemons != viewModel.pokemons {
+			self.pokemonsCollectionView.collectionViewLayout.invalidateLayout()
 			self.pokemonsCollectionView.reloadData()
-		}
-		
-		if self.oldViewModel?.loaderState != viewModel.loaderState {
-			switch viewModel.loaderState {
-			case .show: self.footerView.showLoader()
-			case .hide: self.footerView.hideLoader()
-			case .hideWithError: self.footerView.hideLoaderWithError()
-			}
 		}
 	}
 	
@@ -106,24 +118,10 @@ class PokemonListView: UIView {
 			self.pokemonsCollectionView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
 		]
 		NSLayoutConstraint.activate(pokemonsCollectionViewConstraints)
-		
-		self.layoutIfNeeded()
 	}
 	
 	override func layoutSubviews() {
 		super.layoutSubviews()
-						
-		self.updateAfterLayout()
-	}
-	
-	private func updateAfterLayout() {
-		guard let collectionViewLayout = self.pokemonsCollectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return }
-		
-		let totalInsets = Self.sectionInset.left + Self.sectionInset.right
-		let widthPerItem: CGFloat = self.pokemonsCollectionView.bounds.width - totalInsets
-		
-		collectionViewLayout.itemSize = CGSize(width: widthPerItem, height: Self.cellHeight)
-		collectionViewLayout.sectionInset = Self.sectionInset
 	}
 }
 
@@ -131,20 +129,22 @@ class PokemonListView: UIView {
 
 extension PokemonListView: UICollectionViewDataSource {
 	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-		self.viewModel?.pokemons.count ?? 0
+		self.viewModel?.numberOfPokemons ?? 0
 	}
 	
 	func collectionView(
 		_ collectionView: UICollectionView,
 		cellForItemAt indexPath: IndexPath
 	) -> UICollectionViewCell {
-		let cell = collectionView.dequeueReusableCell(
-			withReuseIdentifier: PokemonCell.reusableIdentifier,
-			for: indexPath) as! PokemonCell
-
-		if let pokemon = viewModel?.pokemons[indexPath.row] {
-			cell.viewModel = PokemonCellViewModel(pokemon: pokemon)
+		guard
+			let cell = collectionView.dequeueReusableCell(
+				withReuseIdentifier: PokemonCell.reusableIdentifier,
+				for: indexPath) as? PokemonCell
+		else {
+			fatalError("Cell not registered")
 		}
+
+		cell.viewModel = viewModel?.pokemonCellViewModel(at: indexPath)
 		
 		return cell
 	}
@@ -155,13 +155,18 @@ extension PokemonListView: UICollectionViewDataSource {
 		at indexPath: IndexPath
 	) -> UICollectionReusableView {
 		if kind == UICollectionView.elementKindSectionFooter {
-			self.footerView = collectionView.dequeueReusableSupplementaryView(
-				ofKind: kind,
-				withReuseIdentifier: PokemonsCollectionViewFooter.reusableIdentifier,
-				for: indexPath
-			) as! PokemonsCollectionViewFooter
+			guard
+				let footerView = collectionView.dequeueReusableSupplementaryView(
+					ofKind: kind,
+					withReuseIdentifier: PokemonsCollectionViewFooter.reusableIdentifier,
+					for: indexPath) as? PokemonsCollectionViewFooter
+			else {
+				fatalError("FooterView not registered")
+			}
 			
-			return self.footerView
+			footerView.viewModel = viewModel?.footerViewModel
+			
+			return footerView
 		}
 		
 		return UICollectionReusableView()
@@ -180,7 +185,8 @@ extension PokemonListView: UICollectionViewDelegate {
 	}
 	
 	func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-		self.didSelectPokemonAtRow?(indexPath.row)
+		guard let pokemon = self.viewModel?.pokemon(at: indexPath) else { return }
+		self.didSelectPokemon?(pokemon)
 	}
 }
 
@@ -193,6 +199,21 @@ extension PokemonListView: UICollectionViewDelegateFlowLayout {
 		referenceSizeForFooterInSection section: Int
 	) -> CGSize {
 		CGSize(width: self.pokemonsCollectionView.bounds.width, height: 60)
+	}
+	
+	func collectionView(
+		_ collectionView: UICollectionView,
+		layout collectionViewLayout: UICollectionViewLayout,
+		sizeForItemAt indexPath: IndexPath
+	) -> CGSize {
+		let totalInsets = Self.sectionInset.left + Self.sectionInset.right
+		let widthPerItem: CGFloat = self.pokemonsCollectionView.bounds.width - totalInsets
+		
+		return CGSize(width: widthPerItem, height: Self.cellHeight)
+	}
+	
+	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+		Self.sectionInset
 	}
 }
 

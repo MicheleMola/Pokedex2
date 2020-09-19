@@ -74,7 +74,7 @@ class PokemonStatsTitleCell: UITableViewCell {
 		
 		self.titleLabel.translatesAutoresizingMaskIntoConstraints = false
 		let titleLabelConstraints = [
-			self.titleLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
+			self.titleLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
 			self.titleLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor),
 			self.titleLabel.trailingAnchor.constraint(greaterThanOrEqualTo: self.trailingAnchor)
 		]

@@ -9,8 +9,12 @@ import UIKit
 
 struct PokemonStatCellViewModel {
 	let title: String
-	let stat: StatResponse
+	let statistic: StatResponse
 	let pokemonTypeColor: UIColor
+	
+	var statisticValue: Int? {
+		self.statistic.baseStat
+	}
 }
 
 class PokemonStatCell: UITableViewCell {
@@ -63,7 +67,7 @@ class PokemonStatCell: UITableViewCell {
 		
 		self.titleLabel.text = viewModel.title
 		
-		self.statisticIndicatorView.progressValue = viewModel.stat.baseStat
+		self.statisticIndicatorView.progressValue = viewModel.statisticValue
 		self.statisticIndicatorView.trackColor = viewModel.pokemonTypeColor.withAlphaComponent(0.2)
 		self.statisticIndicatorView.progressBackgroundColor = viewModel.pokemonTypeColor
 	}
@@ -73,7 +77,7 @@ class PokemonStatCell: UITableViewCell {
 	private func layout() {
 		self.titleLabel.translatesAutoresizingMaskIntoConstraints = false
 		let titleLabelConstraints = [
-			self.titleLabel.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 16),
+			self.titleLabel.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 20),
 			self.titleLabel.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor),
 			self.titleLabel.widthAnchor.constraint(equalToConstant: 80)
 		]
@@ -83,7 +87,7 @@ class PokemonStatCell: UITableViewCell {
 		let statIndicatorViewConstraints = [
 			self.statisticIndicatorView.leadingAnchor.constraint(equalTo: self.titleLabel.trailingAnchor, constant: 32),
 			self.statisticIndicatorView.centerYAnchor.constraint(equalTo: self.titleLabel.centerYAnchor),
-			self.statisticIndicatorView.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -16),
+			self.statisticIndicatorView.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -20),
 			self.statisticIndicatorView.heightAnchor.constraint(equalToConstant: 28)
 		]
 		NSLayoutConstraint.activate(statIndicatorViewConstraints)
