@@ -1,10 +1,3 @@
 # Pokedex
 
 Pokedex developed using the [PokeAPI](https://pokeapi.co).
-
-## Installation
-This project use the [XCodeGen](https://github.com/yonaskolb/XcodeGen) tool to generate the XCode project.
-
-Go to project folder and type this command in the Terminal:
-
-$ xcodegen generate
