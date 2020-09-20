@@ -10,7 +10,6 @@ import XCTest
 @testable import Pokedex
 
 class PokedexTests: XCTestCase {
-	
 	let pokedexAPIClient = PokedexAPIClient()
 	
 	override func setUpWithError() throws {
