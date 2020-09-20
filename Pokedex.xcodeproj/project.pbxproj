@@ -135,8 +135,7 @@
 				30902FACF13BD366616B50AF /* Models */,
 				A402320BF3F675DE0D2E4CCD /* Extensions */,
 				2E81CC6679647A8E4064CF4C /* Networking */,
-				94536B77B52D59642D055F45 /* PokemonDetail */,
-				3C63DDE0A817EDCA45B0C3E4 /* PokemonList */,
+				DEB3973C251795EB009AB7CD /* UI */,
 				CBAEB7350A44C5BB23D33701 /* Utilities */,
 			);
 			path = Pokedex;
@@ -247,6 +246,15 @@
 				A731D9C22186CF5D841CF260 /* LaunchScreen.storyboard */,
 			);
 			path = App;
+			sourceTree = "<group>";
+		};
+		DEB3973C251795EB009AB7CD /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				3C63DDE0A817EDCA45B0C3E4 /* PokemonList */,
+				94536B77B52D59642D055F45 /* PokemonDetail */,
+			);
+			path = UI;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
