@@ -56,13 +56,15 @@ class PokemonDetailTableViewHeader: UIView {
 	private let idLabel = UILabel()
 	private let firstTypeLabel = UILabel()
 	private let secondTypeLabel = UILabel()
+	private let backButton = UIButton()
 	
 	var viewModel: PokemonDetailTableViewHeaderViewModel? {
 		didSet {
-			self.update()
+			self.update(oldViewModel: oldValue)
 		}
 	}
-	private var oldViewModel: PokemonDetailTableViewHeaderViewModel?
+	
+	var didPressBackButton: (() -> ())?
 	
 	override init(frame: CGRect) {
 		super.init(frame: frame)
@@ -79,6 +81,11 @@ class PokemonDetailTableViewHeader: UIView {
 	// MARK: - Setup
 
 	private func setup() {
+		if !Device.isIpad {
+			self.backButton.addTarget(self, action: #selector(self.didPress(_:)), for: .touchUpInside)
+			self.addSubview(self.backButton)
+		}
+		
 		self.addSubview(self.whitePokeballImageView)
 		self.addSubview(self.pokemonImageView)
 		self.addSubview(self.nameLabel)
@@ -90,6 +97,9 @@ class PokemonDetailTableViewHeader: UIView {
 	// MARK: - Style
 
 	private func style() {
+		self.backButton.setBackgroundImage(UIImage(named: "backButton"), for: .normal)
+		self.backButton.contentMode = .scaleAspectFit
+		
 		self.whitePokeballImageView.image = UIImage(named: "whitePokeball")
 		self.whitePokeballImageView.contentMode = .scaleAspectFit
 		self.whitePokeballImageView.alpha = 0.4
@@ -115,13 +125,9 @@ class PokemonDetailTableViewHeader: UIView {
 	
 	// MARK: - Update
 
-	private func update() {
+	private func update(oldViewModel: PokemonDetailTableViewHeaderViewModel?) {
 		guard let viewModel = self.viewModel else {
 			return
-		}
-		
-		defer {
-			self.oldViewModel = viewModel
 		}
 		
 		self.backgroundColor = viewModel.primaryTypeColor
@@ -133,7 +139,7 @@ class PokemonDetailTableViewHeader: UIView {
 		self.secondTypeLabel.text = viewModel.secondType
 		self.secondTypeLabel.isHidden = viewModel.isHiddenSecondType
 		
-		if self.oldViewModel?.pokemonImageURL != viewModel.pokemonImageURL,
+		if oldViewModel?.pokemonImageURL != viewModel.pokemonImageURL,
 			 let imageURL = viewModel.pokemonImageURL
 		{
 			self.pokemonImageView.loadImage(at: imageURL, withPlaceholderImage: viewModel.placeholderImage, animated: true)
@@ -143,6 +149,17 @@ class PokemonDetailTableViewHeader: UIView {
 	// MARK: - Layout
 
 	private func layout() {
+		if !Device.isIpad {
+			self.backButton.translatesAutoresizingMaskIntoConstraints = false
+			let backButtonConstraints = [
+				self.backButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
+				self.backButton.topAnchor.constraint(equalTo: self.topAnchor, constant: 40),
+				self.backButton.widthAnchor.constraint(equalToConstant: 32),
+				self.backButton.heightAnchor.constraint(equalToConstant: 32)
+			]
+			NSLayoutConstraint.activate(backButtonConstraints)
+		}
+		
 		self.whitePokeballImageView.translatesAutoresizingMaskIntoConstraints = false
 		let whitePokeballImageViewConstraints = [
 			self.whitePokeballImageView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 100),
@@ -202,5 +219,9 @@ class PokemonDetailTableViewHeader: UIView {
 		
 		self.firstTypeLabel.layer.cornerRadius = self.firstTypeLabel.bounds.height / 2
 		self.secondTypeLabel.layer.cornerRadius = self.secondTypeLabel.bounds.height / 2
+	}
+	
+	@objc private func didPress(_ button: UIButton) {
+		self.didPressBackButton?()
 	}
 }

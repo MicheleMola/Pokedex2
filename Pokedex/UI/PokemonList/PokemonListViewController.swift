@@ -60,15 +60,12 @@ class PokemonListViewController: UIViewController {
 		super.viewWillAppear(animated)
 		
 		self.title = "Pokedex"
-		
 		self.navigationController?.navigationBar.tintColor = .black
 		self.navigationController?.navigationBar.prefersLargeTitles = true
 	}
 	
 	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
-		
-		self.title = ""
 	}
 	
 	private func setupInteractions() {

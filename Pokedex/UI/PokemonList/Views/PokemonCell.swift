@@ -59,10 +59,9 @@ class PokemonCell: UICollectionViewCell {
 	
 	var viewModel: PokemonCellViewModel? {
 		didSet {
-			self.update()
+			self.update(oldViewModel: oldValue)
 		}
 	}
-	private var oldViewModel: PokemonCellViewModel?
 	
 	override init(frame: CGRect) {
 		super.init(frame: frame)
@@ -127,15 +126,11 @@ class PokemonCell: UICollectionViewCell {
 	
 	// MARK: - Update
 
-	private func update() {
+	private func update(oldViewModel: PokemonCellViewModel?) {
 		guard let viewModel = self.viewModel else {
 			return
 		}
-		
-		defer {
-			self.oldViewModel = viewModel
-		}
-		
+
 		self.contentView.backgroundColor = viewModel.primaryTypeColor
 		
 		self.nameLabel.text = viewModel.pokemonNameCapitalized

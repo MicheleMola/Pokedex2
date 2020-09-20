@@ -64,13 +64,23 @@ class PokemonDetailView: UIView {
 	private static let numberOfCells: Int = 6
 	
 	private let pokemonDetailTableView = UITableView(frame: .zero, style: .grouped)
+	private let topGradientView = UIView()
+	private let topGradientLayer: CAGradientLayer = {
+		let gradientLayer = CAGradientLayer()
+		gradientLayer.type = .axial
+		gradientLayer.startPoint = CGPoint(x: 0.5, y: 0.0)
+		gradientLayer.endPoint = CGPoint(x: 0.5, y: 1.0)
+		gradientLayer.locations = [0.00, 0.35, 1.00]
+		return gradientLayer
+	}()
 	
 	var viewModel: PokemonDetailViewModel? {
 		didSet {
-			self.update()
+			self.update(oldViewModel: oldValue)
 		}
 	}
-	var oldViewModel: PokemonDetailViewModel?
+	
+	var didPressBackButton: (() -> ())?
 					
 	override init(frame: CGRect) {
 		super.init(frame: frame)
@@ -98,7 +108,11 @@ class PokemonDetailView: UIView {
 			forCellReuseIdentifier: PokemonStatsTitleCell.reusableIdentifier
 		)
 		
+		self.topGradientView.isUserInteractionEnabled = false
+		self.topGradientView.layer.addSublayer(self.topGradientLayer)
+
 		self.addSubview(self.pokemonDetailTableView)
+		self.addSubview(self.topGradientView)
 	}
 	
 	// MARK: - Style
@@ -115,16 +129,22 @@ class PokemonDetailView: UIView {
 	
 	// MARK: - Update
 
-	private func update() {
+	private func update(oldViewModel: PokemonDetailViewModel?) {
 		guard let viewModel = self.viewModel else { return }
 		
-		defer {
-			self.oldViewModel = viewModel
-		}
-		
-		if self.oldViewModel?.pokemon != viewModel.pokemon {
+		if oldViewModel?.pokemon != viewModel.pokemon {
 			self.pokemonDetailTableView.reloadData()
 		}
+				
+		self.updateGradientLayer()
+	}
+	
+	private func updateGradientLayer() {
+		guard let topColor = self.viewModel?.primaryColor?.cgColor,
+					let bottomColor = self.viewModel?.primaryColor?.withAlphaComponent(0).cgColor
+		else { return }
+		
+		self.topGradientLayer.colors = [topColor, topColor, bottomColor]
 	}
 	
 	// MARK: - Layout
@@ -138,6 +158,23 @@ class PokemonDetailView: UIView {
 			self.pokemonDetailTableView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
 		]
 		NSLayoutConstraint.activate(pokemonDetailTableViewConstraints)
+		
+		self.topGradientView.translatesAutoresizingMaskIntoConstraints = false
+		let topGradientViewConstraints = [
+			self.topGradientView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+			self.topGradientView.topAnchor.constraint(equalTo: self.topAnchor),
+			self.topGradientView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+			self.topGradientView.heightAnchor.constraint(equalToConstant: 40)
+		]
+		NSLayoutConstraint.activate(topGradientViewConstraints)
+		
+		self.layoutIfNeeded()
+	}
+	
+	override func layoutSubviews() {
+		super.layoutSubviews()
+		
+		self.topGradientLayer.frame = self.topGradientView.frame
 	}
 }
 
@@ -180,6 +217,9 @@ extension PokemonDetailView: UITableViewDelegate {
 		let headerView = PokemonDetailTableViewHeader()
 		
 		headerView.viewModel = self.viewModel?.headerViewModel
+		headerView.didPressBackButton = { [unowned self] in
+			self.didPressBackButton?()
+		}
 		
 		return headerView
 	}

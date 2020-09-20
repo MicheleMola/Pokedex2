@@ -50,10 +50,9 @@ class PokemonListView: UIView {
 	
 	var viewModel: PokemonListViewModel? {
 		didSet {
-			self.update()
+			self.update(oldViewModel: oldValue)
 		}
 	}
-	private var oldViewModel: PokemonListViewModel?
 
 	var willDisplayCellAtRow: ((Int) -> ())?
 	var didSelectPokemon: ((Pokemon) -> ())?
@@ -94,14 +93,10 @@ class PokemonListView: UIView {
 	
 	// MARK: - Update
 
-	private func update() {
+	private func update(oldViewModel: PokemonListViewModel?) {
 		guard let viewModel = self.viewModel else { return }
 		
-		defer {
-			self.oldViewModel = viewModel
-		}
-		
-		if self.oldViewModel?.pokemons != viewModel.pokemons {
+		if oldViewModel?.pokemons != viewModel.pokemons {
 			self.pokemonsCollectionView.collectionViewLayout.invalidateLayout()
 			self.pokemonsCollectionView.reloadData()
 		}
