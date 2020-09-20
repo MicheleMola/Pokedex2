@@ -9,10 +9,10 @@
 import UIKit
 
 class StatisticIndicatorView: UIView {
+	static let statMaxValue = 252
+
 	let valueLabel = UILabel()
 	let progressView = UIProgressView()
-	
-	static let statisticMaxValue = 252
 	
 	var progressValue: Int? {
 		didSet {
@@ -40,33 +40,37 @@ class StatisticIndicatorView: UIView {
 		self.layout()
 	}
 	
-	required init?(coder aDecoder: NSCoder) {
-		super.init(coder: aDecoder)
-		
-		self.setup()
-		self.style()
-		self.layout()
+	required init?(coder: NSCoder) {
+		fatalError("init(coder:) has not been implemented")
 	}
+	
+	// MARK: - Setup
 	
 	private func setup() {
 		self.addSubview(self.valueLabel)
 		self.addSubview(self.progressView)
 	}
 	
+	// MARK: - Style
+
 	private func style() {
 		self.valueLabel.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
 	}
 	
+	// MARK: - Update
+
 	private func update() {
 		guard let progressValue = self.progressValue else { return }
 		
-		let percentageValue = Float(progressValue) / Float(Self.statisticMaxValue)
+		let percentageValue = Float(progressValue) / Float(Self.statMaxValue)
 		
 		self.progressView.progress = percentageValue
 		
 		self.valueLabel.text = "\(progressValue)"
 	}
 	
+	// MARK: - Layout
+
 	private func layout() {
 		self.valueLabel.translatesAutoresizingMaskIntoConstraints = false
 		let valueLabelConstraints = [

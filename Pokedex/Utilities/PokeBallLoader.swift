@@ -23,23 +23,26 @@ class PokeBallLoader: UIView {
 		fatalError("init(coder:) has not been implemented")
 	}
 	
+	// MARK: - Setup
+
 	private func setup() {
 		self.addSubview(self.pokeBallImageView)
 		
 		self.isUserInteractionEnabled = false
 	}
 	
+	// MARK: - Style
+
 	private func style() {		
 		self.pokeBallImageView.image = UIImage(named: "pokeball")
-		
 		self.pokeBallImageView.contentMode = .scaleAspectFit
-		
 		self.pokeBallImageView.alpha = 0
 	}
 	
+	// MARK: - Layout
+
 	private func layout() {
 		self.pokeBallImageView.translatesAutoresizingMaskIntoConstraints = false
-		
 		let constraints = [
 			self.pokeBallImageView.topAnchor.constraint(equalTo: self.topAnchor),
 			self.pokeBallImageView.leftAnchor.constraint(equalTo: self.leftAnchor),
@@ -48,7 +51,6 @@ class PokeBallLoader: UIView {
 			self.pokeBallImageView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
 			self.pokeBallImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor)
 		]
-		
 		NSLayoutConstraint.activate(constraints)
 	}
 	
@@ -63,7 +65,6 @@ class PokeBallLoader: UIView {
 	
 	func dismiss() {
 		self.pokeBallImageView.alpha = 0
-		
 		self.pokeBallImageView.transform = .identity
 	}
 }
