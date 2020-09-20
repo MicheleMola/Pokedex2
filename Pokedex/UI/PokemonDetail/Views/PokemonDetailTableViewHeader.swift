@@ -96,7 +96,7 @@ class PokemonDetailTableViewHeader: UIView {
 
 	private func style() {
 		self.backButton.setBackgroundImage(UIImage(named: "backButton"), for: .normal)
-		self.backButton.contentMode = .scaleAspectFit
+		self.backButton.isHidden = Device.isIpad
 		
 		self.whitePokeballImageView.image = UIImage(named: "whitePokeball")
 		self.whitePokeballImageView.contentMode = .scaleAspectFit
@@ -119,8 +119,6 @@ class PokemonDetailTableViewHeader: UIView {
 		self.secondTypeLabel.textAlignment = .center
 		self.secondTypeLabel.font = UIFont.systemFont(ofSize: 18, weight: .medium)
 		self.secondTypeLabel.textColor = .white
-		
-		self.backButton.isHidden = Device.isIpad
 	}
 	
 	// MARK: - Update
