@@ -81,11 +81,9 @@ class PokemonDetailTableViewHeader: UIView {
 	// MARK: - Setup
 
 	private func setup() {
-		if !Device.isIpad {
-			self.backButton.addTarget(self, action: #selector(self.didPress(_:)), for: .touchUpInside)
-			self.addSubview(self.backButton)
-		}
+		self.backButton.addTarget(self, action: #selector(self.didPress(_:)), for: .touchUpInside)
 		
+		self.addSubview(self.backButton)
 		self.addSubview(self.whitePokeballImageView)
 		self.addSubview(self.pokemonImageView)
 		self.addSubview(self.nameLabel)
@@ -121,6 +119,8 @@ class PokemonDetailTableViewHeader: UIView {
 		self.secondTypeLabel.textAlignment = .center
 		self.secondTypeLabel.font = UIFont.systemFont(ofSize: 18, weight: .medium)
 		self.secondTypeLabel.textColor = .white
+		
+		self.backButton.isHidden = Device.isIpad
 	}
 	
 	// MARK: - Update
@@ -149,16 +149,14 @@ class PokemonDetailTableViewHeader: UIView {
 	// MARK: - Layout
 
 	private func layout() {
-		if !Device.isIpad {
-			self.backButton.translatesAutoresizingMaskIntoConstraints = false
-			let backButtonConstraints = [
-				self.backButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
-				self.backButton.topAnchor.constraint(equalTo: self.topAnchor, constant: 40),
-				self.backButton.widthAnchor.constraint(equalToConstant: 32),
-				self.backButton.heightAnchor.constraint(equalToConstant: 32)
-			]
-			NSLayoutConstraint.activate(backButtonConstraints)
-		}
+		self.backButton.translatesAutoresizingMaskIntoConstraints = false
+		let backButtonConstraints = [
+			self.backButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
+			self.backButton.topAnchor.constraint(equalTo: self.topAnchor, constant: 40),
+			self.backButton.widthAnchor.constraint(equalToConstant: 32),
+			self.backButton.heightAnchor.constraint(equalToConstant: 32)
+		]
+		NSLayoutConstraint.activate(backButtonConstraints)
 		
 		self.whitePokeballImageView.translatesAutoresizingMaskIntoConstraints = false
 		let whitePokeballImageViewConstraints = [
